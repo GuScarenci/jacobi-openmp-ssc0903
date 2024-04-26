@@ -4,7 +4,7 @@
 #include "jacobiseq.h"
 #include "math.h"
 
-double* jacobiseq(double* matrix,double* constants,int N){
+double* jacobiseq(double* matrix,double* constants,int N,float errorTolerance,int maxIterations){
 
     double* lastVariables = malloc(sizeof(double)*N);
     double* error = malloc(sizeof(double)*N);
@@ -15,12 +15,10 @@ double* jacobiseq(double* matrix,double* constants,int N){
     }
 
     double* currentVariables = malloc(sizeof(double)*N);
-    int maximumErrorReached = 0;
+    int maxErrorReached = 0;
 
     int counter = 0;
-    int maxIterations = 1000;
-
-    while (!maximumErrorReached && counter < maxIterations) {
+    while (!maxErrorReached && counter < maxIterations) {
 
         for(int i = 0;i <N;i++){
             double sum = 0;
@@ -33,14 +31,15 @@ double* jacobiseq(double* matrix,double* constants,int N){
             error[i] = fabs(currentVariables[i]- lastVariables[i]);
         }
 
-        maximumErrorReached = 1;
+        maxErrorReached = 1;
 
         for(int i = 0;i<N;i++){
             lastVariables[i] = currentVariables[i];
-            if (error[i] > 0.00001){
-                maximumErrorReached = 0;
+            if (error[i] > errorTolerance){
+                maxErrorReached = 0;
             };
         }
+        counter++;
     }
     free(currentVariables);
     free(error);

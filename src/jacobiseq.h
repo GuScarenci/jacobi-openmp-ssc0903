@@ -1,7 +1,7 @@
 #ifndef __jacobiseq_H__ 
 #define __jacobiseq_H__
 
-double* jacobiseq(double* matrix,double* constants,int N);
+double* jacobiseq(double* matrix,double* constants,int N,float tolerance,int maxIterations);
 
 void makeIterativeFormula(double* matrix,double* constants,int N);
 
