@@ -63,8 +63,9 @@ int main(int argc, char *argv[]){
 
     printf("RowMethod:%d\n",verifyConvergenceByRowMethod(matrix,3));
     printf("ColumnMethod:%d\n",verifyConvergenceByColumnMethod(matrix,3));
-    //double *constants = createConstants(N);
-
-
-    printf("%d",N);
+    ensureConvergenceByColumnMethod(matrix,3);
+    ensureConvergenceByRowMethod(matrix,3);
+    printf("RowMethod:%d\n",verifyConvergenceByRowMethod(matrix,3));
+    printf("ColumnMethod:%d\n",verifyConvergenceByColumnMethod(matrix,3));
+    double *constants = createConstants(N);
 }

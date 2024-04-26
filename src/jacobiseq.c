@@ -5,8 +5,40 @@ int jacobiseq(double** matrix,int N){
     return 0;
 }
 
-int verifyConvergenceByRowMethod(double** matrix,int N){
+void ensureConvergenceByRowMethod(double** matrix,int N){
     
+    for(int i = 0;i<N;i++){
+
+        double alpha = 0;
+        double sum = 0;
+        double divisor = 0;
+
+        for(int j=0;j<N;j++){
+            if(j != i){ 
+                sum += abs(matrix[i][j]);
+            }
+        }
+        matrix[i][i] = sum+2;
+    }
+}
+
+void ensureConvergenceByColumnMethod(double** matrix,int N){
+    for(int j = 0;j<N;j++){
+
+        double alpha = 0;
+        double sum = 0;
+        double divisor = 0;
+
+        for(int i=0;i<N;i++){
+            if(j != i){
+                sum += abs(matrix[i][j]);
+            }
+        }
+        matrix[j][j] = sum+2;
+    }
+}
+
+int verifyConvergenceByRowMethod(double** matrix,int N){
 
     for(int i = 0;i<N;i++){
 
