@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <omp.h>
 
-int main(){
+int j(){
     printf("Hello Wolrd! Jacobi Paralelo...");
     return 0;
 }
