@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int jacobiseq(double** matrix,int N){
+int jacobiseq(double* matrix,int N){
     return 0;
 }
 
-void ensureConvergenceByRowMethod(double** matrix,int N){
+void ensureConvergenceByRowMethod(double* matrix,int N){
     
     for(int i = 0;i<N;i++){
 
@@ -15,14 +15,14 @@ void ensureConvergenceByRowMethod(double** matrix,int N){
 
         for(int j=0;j<N;j++){
             if(j != i){ 
-                sum += abs(matrix[i][j]);
+                sum += abs(matrix[i*N + j]);
             }
         }
-        matrix[i][i] = sum+2;
+        matrix[i*N + i] = sum+2;
     }
 }
 
-void ensureConvergenceByColumnMethod(double** matrix,int N){
+void ensureConvergenceByColumnMethod(double* matrix,int N){
     for(int j = 0;j<N;j++){
 
         double alpha = 0;
@@ -31,14 +31,14 @@ void ensureConvergenceByColumnMethod(double** matrix,int N){
 
         for(int i=0;i<N;i++){
             if(j != i){
-                sum += abs(matrix[i][j]);
+                sum += abs(matrix[i*N + j]);
             }
         }
-        matrix[j][j] = sum+2;
+        matrix[j*N + j] = sum+2;
     }
 }
 
-int verifyConvergenceByRowMethod(double** matrix,int N){
+int verifyConvergenceByRowMethod(double* matrix,int N){
 
     for(int i = 0;i<N;i++){
 
@@ -48,9 +48,9 @@ int verifyConvergenceByRowMethod(double** matrix,int N){
 
         for(int j=0;j<N;j++){
             if(j == i){
-                divisor = matrix[i][j]; 
+                divisor = matrix[i*N + j]; 
             }else{
-                sum += abs(matrix[i][j]);
+                sum += abs(matrix[i*N + j]);
             }
         }
 
@@ -62,7 +62,7 @@ int verifyConvergenceByRowMethod(double** matrix,int N){
     return 1;
 }
 
-int verifyConvergenceByColumnMethod(double** matrix,int N){
+int verifyConvergenceByColumnMethod(double* matrix,int N){
     
 
     for(int j = 0;j<N;j++){
@@ -73,9 +73,9 @@ int verifyConvergenceByColumnMethod(double** matrix,int N){
 
         for(int i=0;i<N;i++){
             if(j == i){
-                divisor = matrix[i][j]; 
+                divisor = matrix[i*N + j]; 
             }else{
-                sum += abs(matrix[i][j]);
+                sum += abs(matrix[i*N + j]);
             }
         }
 

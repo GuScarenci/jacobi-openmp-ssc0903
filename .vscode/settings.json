@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "jacobiseq.h": "c",
+        "stdio.h": "c"
+    }
+}
