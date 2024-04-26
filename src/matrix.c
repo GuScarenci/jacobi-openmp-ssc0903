@@ -3,7 +3,7 @@
 
 double* createConstants(int N){
     double* constants;
-    constants = malloc(sizeof(int)*N);
+    constants = malloc(sizeof(double)*N);
     for(int i = 0;i<N;i++){
         constants[i] = rand();
     }
@@ -12,7 +12,7 @@ double* createConstants(int N){
 
 
 double* createMatrix(int N){
-    double* matrix = malloc(sizeof(int*)*N*N);
+    double* matrix = malloc(sizeof(double*)*N*N);
 
     for(int i = 0;i<N;i++){
         for(int j = 0;j<N;j++){
@@ -25,15 +25,17 @@ double* createMatrix(int N){
 void printMatrix(double* matrix,int N){
     for(int i = 0;i<N;i++){
         for(int j =0;j<N;j++){
-            printf("%lf ",matrix[i*N + j]);
+            printf("%lf \t",matrix[i*N + j]);
         }
         printf("\n");
     }
+    printf("\n");
 }
 
 void printConstants(double* constants,int N){
     for(int i = 0;i<N;i++){
         printf("%lf ",constants[i]);
-        printf("\n");
+        printf("\t");
     }
+     printf("\n");
 }

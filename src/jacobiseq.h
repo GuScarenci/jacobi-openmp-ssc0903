@@ -1,7 +1,9 @@
 #ifndef __jacobiseq_H__ 
 #define __jacobiseq_H__
 
-int jacobiseq(double* matrix,int N);
+double* jacobiseq(double* matrix,double* constants,int N);
+
+void makeIterativeFormula(double* matrix,double* constants,int N);
 
 void ensureConvergenceByRowMethod(double* matrix,int N);
 
