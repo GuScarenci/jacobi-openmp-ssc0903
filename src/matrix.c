@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <stdio.h> 
 #include <stdlib.h>
 #include <math.h>
 
@@ -23,7 +23,7 @@ double* createMatrix(int N){
                 sum += fabs(matrix[i*N + j]);
             }
         }
-        matrix[i*N + i] = sum+2;
+        matrix[i*N + i] = sum+1;
     }
     return matrix;
 }
@@ -45,3 +45,12 @@ void printConstants(double* constants,int N){
     }
      printf("\n");
 }
+
+int vectorCompare(double* a,double* b,int N){
+    for(int i=0;i<N;i++){
+        if(a[i]!=b[i]){
+            return 0;
+        }
+    }
+    return 1;
+}   

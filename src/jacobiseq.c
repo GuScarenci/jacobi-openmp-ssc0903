@@ -1,8 +1,6 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include "matrix.h"
-#include "jacobiseq.h"
-#include "math.h"
+#include <math.h>
+
 
 double* jacobiseq(double* matrix,double* constants,int N,float errorTolerance,int maxIterations){
 
