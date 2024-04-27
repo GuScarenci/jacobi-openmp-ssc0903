@@ -20,25 +20,31 @@ double* jacobipar(double* matrix,double* constants,int N,float errorTolerance,in
     double delta = omp_get_wtime();
     do {
         convergenceProved = 1;
-        //#pragma omp parallel for shared(lastVariables, currentVariables, matrix, constants) reduction(&& : convergenceProved)
+        #pragma omp parallel for shared(lastVariables, currentVariables, matrix, constants) reduction(&& : convergenceProved)
         for (int i = 0; i < N; i++) {
-            double sum = 0;
 
-            #pragma omp task shared(matrix, lastVariables, sum)
+            double sum1 = 0;
+            double sum2 =0;
+
+            #pragma omp task shared(matrix, lastVariables)
             {
+                #pragma omp simd reduction(+:sum1)
                 for (int j = 0; j < i; j++) {
-                    sum += matrix[i * N + j] * lastVariables[j];
+                    sum1 += matrix[i * N + j] * lastVariables[j];
                 }
             }
 
-            #pragma omp task shared(matrix, lastVariables, sum)
-            {
+            #pragma omp task shared(matrix, lastVariables)
+            {   
+                #pragma omp simd reduction(+:sum2)
                 for (int j = i + 1; j < N; j++) {
-                    sum += matrix[i * N + j] * lastVariables[j];
+                    sum2 += matrix[i * N + j] * lastVariables[j];
                 }
             }
 
             #pragma omp taskwait // Wait for all tasks to complete
+
+            double sum = sum1 + sum2;
 
             currentVariables[i] = (constants[i] - sum) / matrix[i * N + i];
 
