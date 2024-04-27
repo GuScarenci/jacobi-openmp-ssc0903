@@ -2,13 +2,13 @@
 #include <math.h>
 #include <omp.h>
 
-double* jacobipar(double* matrix,double* constants,int N,float errorTolerance,int maxIterations,int T){
+double* jacobipar(double* matrix,double* constants,int N,float errorTolerance,int maxIterations){
 
     double* lastVariables = malloc(sizeof(double)*N);
     double* error = malloc(sizeof(double)*N);
     double* currentVariables = malloc(sizeof(double)*N);
 
-    #pragma omp parallel num_threads(T)
+    #pragma omp parallel
     omp_set_nested(1);
     {
         #pragma omp parallel for
@@ -19,17 +19,16 @@ double* jacobipar(double* matrix,double* constants,int N,float errorTolerance,in
 
         #pragma omp single
         {
-            int maxErrorReached = 0;
-
+            int errorStopCriteriumReached = 0;
             int counter = 0;
-            while (!maxErrorReached && counter < maxIterations) {
+            while (!errorStopCriteriumReached && counter < maxIterations) {
 
                 #pragma omp parallel for
                 for(int i = 0;i <N;i++){
                     double sum = 0;
 
-                    #pragma omp parallel for
-                    for(int j =0;j<N;j++){
+                    #pragma omp parallel for reduction(+:sum) firstprivate(i)
+                    for(int j = 0;j<N;j++){
                         if(i!=j){
                             sum += matrix[i*N+j]*lastVariables[j];
                         }
@@ -38,19 +37,24 @@ double* jacobipar(double* matrix,double* constants,int N,float errorTolerance,in
                     error[i] = fabs(currentVariables[i]- lastVariables[i]);
                 }
 
-                maxErrorReached = 1;
+                int maxErrorReached = 0;
 
-                #pragma omp parallel for
+                #pragma omp parallel for reduction(max:maxErrorReached)
                 for(int i = 0;i<N;i++){
                     lastVariables[i] = currentVariables[i];
-                    if (error[i] > errorTolerance){
-                        maxErrorReached = 0;
+                    if (error[i] > maxErrorReached){
+                        maxErrorReached = error[i];
                     };
+                }
+
+                if(maxErrorReached<errorTolerance){
+                    errorStopCriteriumReached = 1;
                 }
                 counter++;
             }
         }//end #pragma omp single
     }
+
     free(currentVariables);
     free(error);
     return lastVariables; //Free outside
