@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 double* createConstants(int N){
     double* constants;
@@ -10,14 +11,19 @@ double* createConstants(int N){
     return constants;
 }
 
-
 double* createMatrix(int N){
     double* matrix = malloc(sizeof(double*)*N*N);
 
     for(int i = 0;i<N;i++){
+        double sum = 0;
+
         for(int j = 0;j<N;j++){
-            matrix[i*N + j] = rand();
+            if(j != i){ 
+                matrix[i*N + j] = rand();
+                sum += fabs(matrix[i*N + j]);
+            }
         }
+        matrix[i*N + i] = sum+2;
     }
     return matrix;
 }
