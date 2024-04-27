@@ -16,8 +16,7 @@ double* jacobipar(double* matrix,double* constants,int N,float errorTolerance,in
 
     int counter = 0;
     int convergenceProved = 1;
-
-    double delta = omp_get_wtime();
+    
     do {
         convergenceProved = 1;
         #pragma omp parallel for shared(lastVariables, currentVariables, matrix, constants) reduction(&& : convergenceProved)
@@ -62,8 +61,6 @@ double* jacobipar(double* matrix,double* constants,int N,float errorTolerance,in
 
         counter++;
     } while (!convergenceProved && counter < maxIterations);
-    delta = (omp_get_wtime() - delta)*1000;
-    printf("Middle time: %lf ms\n",delta);
 
     free(currentVariables);
     return lastVariables; //Free outside
