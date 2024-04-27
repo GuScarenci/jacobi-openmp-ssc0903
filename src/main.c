@@ -19,10 +19,13 @@ int main(int argc, char *argv[]){
 
     double delta = omp_get_wtime();
 
-    srand(seed);
     double* matrix = createMatrix(N);
     double *constants = createConstants(N);
     omp_set_num_threads(T);
+    srand(seed);
+
+    omp_set_nested(1);
+
     delta = (omp_get_wtime() - delta)*1000;
     printf("IO time: %lf ms\n",delta);
     
@@ -31,19 +34,19 @@ int main(int argc, char *argv[]){
     delta = (omp_get_wtime() - delta)*1000;
     printf("Sequential time: %lf ms\n",delta);
 
-    // double delta2 = omp_get_wtime();
-    // double *results2 = jacobipar(matrix,constants,N,0.001,10000);
-    // delta2 = (omp_get_wtime() - delta2)*1000;
-    // printf("Parallel time: %lf ms\n",delta2);
+    double delta2 = omp_get_wtime();
+    double *results2 = jacobipar(matrix,constants,N,0.001,10000);
+    delta2 = (omp_get_wtime() - delta2)*1000;
+    printf("Parallel time: %lf ms\n",delta2);
 
-    // printf("Speedup:%lf\n",(delta/delta2));
-    // printf("Eficiência:%lf\n",(delta/delta2)/T);
+    printf("Speedup:%lf\n",(delta/delta2));
+    printf("Eficiência:%lf\n",(delta/delta2)/T);
 
     
-    //printf("%d\n",vectorCompare(results,results2,N));
+    printf("%d\n",vectorCompare(results,results2,N));
     
     free(results);
-    //free(results2);
+    free(results2);
     free(matrix);
     free(constants);
 }
