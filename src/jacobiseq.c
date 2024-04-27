@@ -1,56 +1,45 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
-int jacobiseq(double** matrix,int N){
-    return 0;
-}
 
-int verifyConvergenceByRowMethod(double** matrix,int N){
-    
+double* jacobiseq(double* matrix,double* constants,int N,float errorTolerance,int maxIterations){
+
+    double* lastVariables = malloc(sizeof(double)*N);
+    double* error = malloc(sizeof(double)*N);
 
     for(int i = 0;i<N;i++){
-
-        double alpha = 0;
-        double sum = 0;
-        double divisor = 0;
-
-        for(int j=0;j<N;j++){
-            if(j == i){
-                divisor = matrix[i][j]; 
-            }else{
-                sum += abs(matrix[i][j]);
-            }
-        }
-
-        alpha = sum/divisor;
-        if(alpha >= 1){
-            return 0;
-        }
+        lastVariables[i] = 0;
+        error[i] = 10;
     }
-    return 1;
-}
 
-int verifyConvergenceByColumnMethod(double** matrix,int N){
-    
+    double* currentVariables = malloc(sizeof(double)*N);
+    int maxErrorReached = 0;
 
-    for(int j = 0;j<N;j++){
+    int counter = 0;
+    while (!maxErrorReached && counter < maxIterations) {
 
-        double alpha = 0;
-        double sum = 0;
-        double divisor = 0;
-
-        for(int i=0;i<N;i++){
-            if(j == i){
-                divisor = matrix[i][j]; 
-            }else{
-                sum += abs(matrix[i][j]);
+        for(int i = 0;i <N;i++){
+            double sum = 0;
+            for(int j =0;j<N;j++){
+                if(i!=j){
+                    sum += matrix[i*N+j]*lastVariables[j];
+                }
             }
+            currentVariables[i] = (constants[i]-sum)/matrix[i*N+i];
+            error[i] = fabs(currentVariables[i]- lastVariables[i]);
         }
 
-        alpha = sum/divisor;
-        if(alpha >= 1){
-            return 0;
+        maxErrorReached = 1;
+
+        for(int i = 0;i<N;i++){
+            lastVariables[i] = currentVariables[i];
+            if (error[i] > errorTolerance){
+                maxErrorReached = 0;
+            };
         }
+        counter++;
     }
-    return 1;
+    free(currentVariables);
+    free(error);
+    return lastVariables; //Free outside
 }

@@ -1,70 +1,54 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <omp.h>
+
 #include "jacobiseq.h"
-
-double* createConstants(int N){
-    double* constants;
-    constants = malloc(sizeof(int)*N);
-    for(int i = 0;i<N;i++){
-        constants[i] = rand();
-    }
-    return constants;
-}
-
-
-double** createMatrix(int N){
-    double** matrix;
-    matrix = malloc(sizeof(int*)*N);
-    for(int i = 0;i<N;i++){
-        matrix[i] = malloc(sizeof(int)*N);
-        for(int j = 0;j<N;j++){
-            matrix[i][j] = rand();
-        }
-    }
-    return matrix;
-}
-
-void printMatrix(double** matrix,int N){
-    for(int i = 0;i<N;i++){
-        for(int j =0;j<N;j++){
-            printf("%lf ",matrix[i][j]);
-        }
-        printf("\n");
-    }
-}
-
-void printConstants(double* constants,int N){
-    for(int i = 0;i<N;i++){
-        printf("%lf ",constants[i]);
-        printf("\n");
-    }
-}
+#include "jacobipar.h"
+#include "matrix.h"
 
 int main(int argc, char *argv[]){
+
     if(argc != 4){
-        printf("Wrong!");
+        printf("Wrong number of arguments!\n");
         return 1;
     }
+
     int N = atoi(argv[1]);
-    //int T = atoi(argv[2]);
+    int T = atoi(argv[2]);
     int seed = atoi(argv[1]);
 
     srand(seed);
+    double* matrix = createMatrix(N);
+    double *constants = createConstants(N);
+    
+    double delta = omp_get_wtime();
+    double *results = jacobiseq(matrix,constants,N,0.001,1000);
+    delta = (omp_get_wtime() - delta)*1000;
+    printf("Sequential time: %lf ms\n",delta);
 
-    double** matrix = createMatrix(3);
-    double matrix2[3][3] = {{3,1,1},{1,3,1},{2,1,4}};
+    double delta2 = omp_get_wtime();
+    double *results2 = jacobipar(matrix,constants,N,0.001,1000,T);
+    delta2 = (omp_get_wtime() - delta2)*1000;
+    printf("Parallel time: %lf ms\n",delta2);
 
-    for(int i = 0;i<N;i++){
-        for(int j =0;j<N;j++){
-            matrix[i][j] = matrix2[i][j];
-        }
-    }
+    printf("Speedup:%lf\n",(delta/delta2));
 
-
-    printf("RowMethod:%d\n",verifyConvergenceByRowMethod(matrix,3));
-    printf("ColumnMethod:%d\n",verifyConvergenceByColumnMethod(matrix,3));
-    //double *constants = createConstants(N);
-
-
-    printf("%d",N);
+    printf("%d\n",vectorCompare(results,results2,N));
+    
+    free(results);
+    free(results2);
+    free(matrix);
+    free(constants);
 }
+    //EXAMPLE TO MATRIX TO CHECK IF JACOBI IS WORKING!
+    // double matrix2[3][3] = {{3,-1,-1},{-1,3,1},{2,1,4}};
+    // for(int i = 0;i<N;i++){
+    //     for(int j =0;j<N;j++){
+    //         matrix[i*N + j] = matrix2[i][j];
+    //     }
+    // }
+    // double constants2[3] = {1,3,7};
+    // for(int i = 0;i<N;i++){
+    //     constants[i] = constants2[i];
+    // }
+    //EXAMPLE
