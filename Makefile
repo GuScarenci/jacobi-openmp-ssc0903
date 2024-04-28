@@ -1,14 +1,14 @@
 CC ?= gcc
 ZIP ?= 7za
 PDFLAGS += -march=native
-CFLAGS += -Wall -Wextra -Wpedantic
+CFLAGS += -Wall -Wextra -Wpedantic -fopenmp
 LDFLAGS += -lm
 VDFLAGS += --leak-check=full --show-leak-kinds=all -s
 
 SRCDIRS = $(sort $(dir $(wildcard src/*/)))
 INC_PARAMS = $(addprefix -I ,$(SRCDIRS))
 
-EXECUTABLE ?= build/program
+EXECUTABLE ?= build/jacobipar
 
 ZIPFILE    ?= ../zipfile.zip
 CFILES      = $(wildcard src/*.c) $(wildcard src/**/*.c)

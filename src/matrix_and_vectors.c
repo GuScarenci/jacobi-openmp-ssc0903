@@ -6,7 +6,7 @@ double* createConstants(int N){
     double* constants;
     constants = malloc(sizeof(double)*N);
     for(int i = 0;i<N;i++){
-        constants[i] = rand();
+        constants[i] = rand()%1000; // celulas da matriz limitadas a 1000
     }
     return constants;
 }
@@ -19,7 +19,7 @@ double* createMatrix(int N){
 
         for(int j = 0;j<N;j++){
             if(j != i){ 
-                matrix[i*N + j] = rand();
+                matrix[i*N + j] = rand()%1000; // celulas dos coeficientes limitados a 1000
                 sum += fabs(matrix[i*N + j]);
             }
         }
@@ -46,11 +46,12 @@ void printConstants(double* constants,int N){
      printf("\n");
 }
 
-int vectorCompare(double* a,double* b,int N){
+void vectorCompare(double* a,double* b,int N){
     for(int i=0;i<N;i++){
-        if(a[i]!=b[i]){
-            return 0;
+        if(fabs(a[i] - b[i]) > 0.00001){
+            printf("Results DON'T match!\n");
+            return;
         }
     }
-    return 1;
+    printf("Result match!\n");
 }   
