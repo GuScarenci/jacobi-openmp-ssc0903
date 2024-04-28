@@ -24,6 +24,15 @@ make run_par ARGS="<N> <T> <S>"
 
 Onde `N` é o tamanho da matriz, `T` é o número de threads e `S` é o número de iterações.
 
+# Gerando dados
+Para gerar dados criamos um script em Python que gera um arquivo CSV com os dados de tempo de execução do código sequencial e paralelo. Para rodar o script digite:
+```bash
+python scripts/daq.py <R>
+```
+Onde `R` é o número de vezes que o código será executado.
+
+A saída do script será um arquivo `res/data.csv` com a média, mediana, desvio padrão dos tempos de execução do algoritmo sequencial e do paralelo e o speedup e a eficiência para cada par de carga trabalho (`N`) e número de threads (`T`).
+
 # Autores
 - [Beatriz Lomes](b.lomes@usp.br) - 12548038
 - [Gustavo Scarenci](github.com/GuScarenci) - 12547792
