@@ -51,6 +51,10 @@ run_seq: $(EXECUTABLE_SEQ)
 run_par: $(EXECUTABLE_PAR)
 	@time ./$(EXECUTABLE_PAR) $(ARGS)
 
+debug: CFLAGS += -g
+debug: clean
+debug: $(EXECUTABLE_SEQ) $(EXECUTABLE_PAR)
+
 debug_seq: CFLAGS += -g
 debug_seq: clean
 debug_seq: $(EXECUTABLE_SEQ)
