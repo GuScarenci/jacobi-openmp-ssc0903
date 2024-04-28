@@ -19,11 +19,11 @@ int main(int argc, char *argv[]){
     int seed = atoi(argv[3]);
     double tolerance = 0.001;
     int maxIterations = 10000;
+    srand(seed);
 
     double* matrix = createMatrix(N);
     double *constants = createConstants(N);
     omp_set_num_threads(T);
-    srand(seed);
     omp_set_nested(1);
 
 #ifdef JACOBIPAR
