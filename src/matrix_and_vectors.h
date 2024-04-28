@@ -9,6 +9,6 @@ void printMatrix(double* matrix,int N);
 
 void printConstants(double* constants,int N);
 
-int vectorCompare(double* a,double* b,int N);
+void vectorCompare(double* a,double* b,int N);
 
 #endif

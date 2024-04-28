@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-
 double* jacobiseq(double* matrix,double* constants,int N,float errorTolerance,int maxIterations){
 
     double* lastVariables = malloc(sizeof(double)*N);
