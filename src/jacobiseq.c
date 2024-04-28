@@ -25,7 +25,7 @@ double* jacobiseq(double* matrix,double* constants,int N,float errorTolerance,in
             for(int j = i + 1; j < N; j++){ // Summing all j > i
                 sum += matrix[i * N + j] * lastVariables[j];
             }
-            
+
             currentVariables[i] = (constants[i]-sum)/matrix[i*N+i];
             convergenceProved &= !(fabs(currentVariables[i]- lastVariables[i]) > errorTolerance);
         }
