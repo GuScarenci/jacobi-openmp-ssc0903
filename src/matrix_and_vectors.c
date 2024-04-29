@@ -5,21 +5,29 @@
 double* createConstants(int N){
     double* constants;
     constants = malloc(sizeof(double)*N);
+    if (constants == NULL) {
+        fprintf(stderr, "Error: No sufficient memory in constants allocation!\n");
+        exit(1);
+    }
+
     for(int i = 0;i<N;i++){
-        constants[i] = rand()%1000; // celulas da matriz limitadas a 1000
+        constants[i] =(double)rand()/100000; // celulas da matriz com uma magnitude menor
     }
     return constants;
 }
 
 double* createMatrix(int N){
     double* matrix = malloc(sizeof(double)*N*N);
+    if (matrix == NULL) {
+        fprintf(stderr, "Error: No sufficient memory in matrix allocation!\n");
+        exit(1);
+    }
 
     for(int i = 0;i<N;i++){
         double sum = 0;
-
         for(int j = 0;j<N;j++){
             if(j != i){ 
-                matrix[i*N + j] = rand()%1000; // celulas dos coeficientes limitados a 1000
+                matrix[i*N + j] = (double)rand()/100000; // celulas da matriz com uma magnitude menor
                 sum += fabs(matrix[i*N + j]);
             }
         }

@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <omp.h>
@@ -5,7 +6,15 @@
 double* jacobipar(double* matrix,double* constants,int N,float errorTolerance,int maxIterations){
 
     double* lastVariables = malloc(sizeof(double)*N);
+    if (constants == NULL) {
+        fprintf(stderr, "Error: No sufficient memory!\n");
+        exit(1);
+    }
     double* currentVariables = malloc(sizeof(double)*N);
+    if (constants == NULL) {
+        fprintf(stderr, "Error: No sufficient memory!\n");
+        exit(1);
+    }
 
     #pragma omp simd //performs a little better than "parallel for" for tested cases
     for(int i = 0;i<N;i++){

@@ -1,10 +1,19 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
 double* jacobiseq(double* matrix,double* constants,int N,float errorTolerance,int maxIterations){
 
     double* lastVariables = malloc(sizeof(double)*N);
+    if (constants == NULL) {
+        fprintf(stderr, "Error: No sufficient memory!\n");
+        exit(1);
+    }
     double* currentVariables = malloc(sizeof(double)*N);
+    if (constants == NULL) {
+        fprintf(stderr, "Error: No sufficient memory!\n");
+        exit(1);
+    }
 
     for(int i = 0;i<N;i++){
         lastVariables[i] = 0;
