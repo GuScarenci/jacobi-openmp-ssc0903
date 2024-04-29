@@ -2,14 +2,14 @@
 #include <stdlib.h>
 #include <math.h>
 
-double* jacobiseq(double* matrix,double* constants,int N,float errorTolerance,int maxIterations){
+float* jacobiseq(float* matrix,float* constants,int N,float errorTolerance,int maxIterations){
 
-    double* lastVariables = malloc(sizeof(double)*N);
+    float* lastVariables = malloc(sizeof(float)*N);
     if (constants == NULL) {
         fprintf(stderr, "Error: No sufficient memory!\n");
         exit(1);
     }
-    double* currentVariables = malloc(sizeof(double)*N);
+    float* currentVariables = malloc(sizeof(float)*N);
     if (constants == NULL) {
         fprintf(stderr, "Error: No sufficient memory!\n");
         exit(1);
@@ -25,7 +25,7 @@ double* jacobiseq(double* matrix,double* constants,int N,float errorTolerance,in
     do {
         convergenceProved = 1;
         for(int i = 0;i <N;i++){
-            double sum = 0;
+            float sum = 0;
 
             for(int j = 0; j < i; j++){ // Summing all j < i
                 sum += matrix[i * N + j] * lastVariables[j];
@@ -39,7 +39,7 @@ double* jacobiseq(double* matrix,double* constants,int N,float errorTolerance,in
             convergenceProved &= !(fabs(currentVariables[i]- lastVariables[i]) > errorTolerance);
         }
 
-        double* temp = lastVariables;
+        float* temp = lastVariables;
         lastVariables = currentVariables;
         currentVariables = temp;
 

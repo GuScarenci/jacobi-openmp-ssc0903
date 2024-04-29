@@ -3,14 +3,14 @@
 #include <math.h>
 #include <omp.h>
 
-double* jacobipar(double* matrix,double* constants,int N,float errorTolerance,int maxIterations){
+float* jacobipar(float* matrix,float* constants,int N,float errorTolerance,int maxIterations){
 
-    double* lastVariables = malloc(sizeof(double)*N);
+    float* lastVariables = malloc(sizeof(float)*N);
     if (constants == NULL) {
         fprintf(stderr, "Error: No sufficient memory!\n");
         exit(1);
     }
-    double* currentVariables = malloc(sizeof(double)*N);
+    float* currentVariables = malloc(sizeof(float)*N);
     if (constants == NULL) {
         fprintf(stderr, "Error: No sufficient memory!\n");
         exit(1);
@@ -30,7 +30,7 @@ double* jacobipar(double* matrix,double* constants,int N,float errorTolerance,in
         #pragma omp parallel for shared(lastVariables, currentVariables) reduction(&&:convergenceProved)
         for (int i = 0; i < N; i++) {
 
-             double sum = 0;
+             float sum = 0;
 
             #pragma omp task shared(matrix, lastVariables, sum)
             {
@@ -55,7 +55,7 @@ double* jacobipar(double* matrix,double* constants,int N,float errorTolerance,in
             convergenceProved &= !(fabs(currentVariables[i] - lastVariables[i]) > errorTolerance);
         }
 
-        double* temp = lastVariables;
+        float* temp = lastVariables;
         lastVariables = currentVariables;
         currentVariables = temp;
 

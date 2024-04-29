@@ -1,14 +1,14 @@
 #ifndef __matrix_H__ 
 #define __matrix_H__
 
-double* createConstants(int N);
+float* createConstants(int N);
 
-double* createMatrix(int N);
+float* createMatrix(int N);
 
-void printMatrix(double* matrix,int N);
+void printMatrix(float* matrix,int N);
 
-void printConstants(double* constants,int N);
+void printConstants(float* constants,int N);
 
-void vectorCompare(double* a,double* b,int N);
+void vectorCompare(float* a,float* b,int N);
 
 #endif

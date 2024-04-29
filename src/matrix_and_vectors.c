@@ -2,32 +2,32 @@
 #include <stdlib.h>
 #include <math.h>
 
-double* createConstants(int N){
-    double* constants;
-    constants = malloc(sizeof(double)*N);
+float* createConstants(int N){
+    float* constants;
+    constants = malloc(sizeof(float)*N);
     if (constants == NULL) {
         fprintf(stderr, "Error: No sufficient memory in constants allocation!\n");
         exit(1);
     }
 
     for(int i = 0;i<N;i++){
-        constants[i] =(double)rand()/100000; // celulas da matriz com uma magnitude menor
+        constants[i] =(float)(rand()%1000); // celulas da matriz com uma magnitude menor
     }
     return constants;
 }
 
-double* createMatrix(int N){
-    double* matrix = malloc(sizeof(double)*N*N);
+float* createMatrix(int N){
+    float* matrix = malloc(sizeof(float)*N*N);
     if (matrix == NULL) {
         fprintf(stderr, "Error: No sufficient memory in matrix allocation!\n");
         exit(1);
     }
 
     for(int i = 0;i<N;i++){
-        double sum = 0;
+        float sum = 0;
         for(int j = 0;j<N;j++){
             if(j != i){ 
-                matrix[i*N + j] = (double)rand()/100000; // celulas da matriz com uma magnitude menor
+                matrix[i*N + j] = (float)(rand()%1000); // celulas da matriz com uma magnitude menor
                 sum += fabs(matrix[i*N + j]);
             }
         }
@@ -36,7 +36,7 @@ double* createMatrix(int N){
     return matrix;
 }
 
-void printMatrix(double* matrix,int N){
+void printMatrix(float* matrix,int N){
     for(int i = 0;i<N;i++){
         for(int j =0;j<N;j++){
             printf("%lf \t",matrix[i*N + j]);
@@ -46,7 +46,7 @@ void printMatrix(double* matrix,int N){
     printf("\n");
 }
 
-void printConstants(double* constants,int N){
+void printConstants(float* constants,int N){
     for(int i = 0;i<N;i++){
         printf("%lf ",constants[i]);
         printf("\t");
@@ -54,7 +54,7 @@ void printConstants(double* constants,int N){
      printf("\n");
 }
 
-void vectorCompare(double* a,double* b,int N){
+void vectorCompare(float* a,float* b,int N){
     for(int i=0;i<N;i++){
         if(fabs(a[i] - b[i]) > 0.00001){
             printf("Results DON'T match!\n");
