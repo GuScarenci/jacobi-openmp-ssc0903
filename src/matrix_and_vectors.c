@@ -12,7 +12,7 @@ double* createConstants(int N){
 }
 
 double* createMatrix(int N){
-    double* matrix = malloc(sizeof(double*)*N*N);
+    double* matrix = malloc(sizeof(double)*N*N);
 
     for(int i = 0;i<N;i++){
         double sum = 0;
