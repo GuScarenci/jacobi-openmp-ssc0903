@@ -17,56 +17,47 @@ float* jacobipar(float* matrix,float* constants,int N,float errorTolerance){
         exit(1);
     }
 
-    #pragma omp simd
+    #pragma omp parallel for simd
     for(int i = 0;i<N;i++){
         lastVariables[i] = constants[i];
     }
 
-    int converged = 0;
+    float mr = 1;
 
     do {
-        converged = 1;
         float maxError = -1;
         float maxVariable = -1;
 
-        //#pragma omp parallel for reduction(max:maxError,maxVariable)
-        for(int i = 0;i <N;i++){
-            float sum = 0;
+        #pragma omp parallel for reduction(max:maxError,maxVariable) default(firstprivate) shared(lastVariables,currentVariables) schedule(dynamic,10)
+            for(int i = 0;i <N;i++){
+                float sum = 0;
 
-            //#pragma omp task
-            {
-                //#pragma omp simd reduction(+:sum)
-                for(int j = 0; j < i; j++){ // Summing all j < i
-                    sum += matrix[i * N + j] * lastVariables[j];
+                #pragma omp taskwait
+                {
+                    #pragma omp simd reduction(+:sum)
+                    for(int j = 0; j < N; j++){
+                        sum += matrix[i * N + j] * lastVariables[j];
+                    }
+                }
+                
+                currentVariables[i] = (constants[i]-sum);
+                float currentError = fabs(currentVariables[i] - lastVariables[i]);
+                if (currentError > maxError) {
+                    maxError = currentError;
+                }
+                float absCurrentVariable = fabs(currentVariables[i]);
+                if (absCurrentVariable > maxVariable) {
+                    maxVariable = absCurrentVariable;
                 }
             }
 
-            //#pragma omp task
-            {
-                //#pragma omp simd reduction(+:sum)
-                for(int j = i + 1; j < N; j++){ // Summing all j > i
-                    sum += matrix[i * N + j] * lastVariables[j];
-                }
-            }
-
-            //#pragma omp taskwait
-            currentVariables[i] = (constants[i]-sum);
-
-
-            maxError = fmax(maxError,fabs(currentVariables[i]-lastVariables[i]));
-            maxVariable = fmax(maxVariable,fabs(currentVariables[i]));
-        }
-
-        float mr = maxError/maxVariable;
-        converged = !(mr>errorTolerance);
+        mr = maxError/maxVariable;
         
         float* temp = lastVariables;
         lastVariables = currentVariables;
         currentVariables = temp;
 
-    } while (!converged);
-
-    //printf("Numero de iterações:%d\n",count);
+    } while (mr>errorTolerance);
 
     free(currentVariables);
     return lastVariables; //Free outside

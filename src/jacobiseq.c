@@ -10,6 +10,7 @@ float* jacobiseq(float* matrix,float* constants,int N,float errorTolerance){
         fprintf(stderr, "Error: No sufficient memory!\n");
         exit(1);
     }
+
     float* currentVariables = malloc(sizeof(float)*N);
     if (currentVariables == NULL) {
         fprintf(stderr, "Error: No sufficient memory!\n");
@@ -20,40 +21,38 @@ float* jacobiseq(float* matrix,float* constants,int N,float errorTolerance){
         lastVariables[i] = constants[i];
     }
 
-    int converged = 0;
+    float mr = 1;
 
     do {
-        converged = 1;
         float maxError = -1;
         float maxVariable = -1;
 
         for(int i = 0;i <N;i++){
             float sum = 0;
 
-            for(int j = 0; j < N; j++){ // Summing all j < i
-                sum += matrix[i * N + j] * lastVariables[j];
-            }
-
-            for(int j = i + 1; j < N; j++){ // Summing all j > i
+            for(int j = 0; j < N; j++){
                 sum += matrix[i * N + j] * lastVariables[j];
             }
 
             currentVariables[i] = (constants[i]-sum);
 
-            maxError = fmax(maxError,fabs(currentVariables[i]-lastVariables[i]));
-            maxVariable = fmax(maxVariable,fabs(currentVariables[i]));
+            float currentError = fabs(currentVariables[i] - lastVariables[i]);
+            if (currentError > maxError) {
+                maxError = currentError;
+            }
+            float absCurrentVariable = fabs(currentVariables[i]);
+            if (absCurrentVariable > maxVariable) {
+                maxVariable = absCurrentVariable;
+            }
         }
 
-        float mr = maxError/maxVariable;
-        converged = !(mr>errorTolerance);
+        mr = maxError/maxVariable;
         
         float* temp = lastVariables;
         lastVariables = currentVariables;
         currentVariables = temp;
 
-    } while (!converged);
-
-    //printf("Numero de iterações:%d\n",count);
+    } while (mr>errorTolerance);
 
     free(currentVariables);
     return lastVariables; //Free outside

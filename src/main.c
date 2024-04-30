@@ -52,8 +52,8 @@ int main(int argc, char *argv[]){
         }
     }
     vectorCompare(temp,constants,N);
-    // printf("Resultado calculado pelo sequencial:%lf\n",temp);
-    // printf("Resultado esperado:%lf\n\n",constants[eqChoice]);
+    //printf("Resultado calculado pelo sequencial:%lf\n",temp);
+    //printf("Resultado esperado:%lf\n\n",constants[eqChoice]);
     //END EQUATION RESULT REQUESTED BY USER
 
     free(matrix);
