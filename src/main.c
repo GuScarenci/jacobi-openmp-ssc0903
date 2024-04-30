@@ -34,26 +34,33 @@ int main(int argc, char *argv[]){
 
     //JACOBI
 #ifdef JACOBIPAR
-    float* results = jacobipar(normalizedMatrix,normalizedConstants,N,tolerance);
+    /*float* results =*/ jacobipar(normalizedMatrix,normalizedConstants,N,tolerance);
 #else
-    float* results = jacobiseq(normalizedMatrix,normalizedConstants,N,tolerance);
+    /*float* results =*/ jacobiseq(normalizedMatrix,normalizedConstants,N,tolerance);
 #endif
     //END JACOBI
 
+    //SHOWS IF RESULTS MATCH
+    // float* temp = (float*)malloc(sizeof(float)*N);
+    // for(int eqChoice = 0;eqChoice<N;eqChoice++){
+    //     temp[eqChoice] = 0;
+    //     for(int j = 0;j<N;j++)
+    //         temp[eqChoice] += matrix[eqChoice*N+j]*results[j];
+    // }
+    // vectorCompare(temp,constants,N);
+    //END SHOWS IF RESULTS MATCH
+
     //SHOWS EQUATION RESULT REQUESTED BY USER
     // printf("Qual equação deseja ver? Escolha um número de 0 até %d.\n",N-1);
-
-    float* temp = (float*)malloc(sizeof(float)*N);
-    for(int eqChoice = 0;eqChoice<N;eqChoice++){
-        //scanf("%d",&eqChoice);
-        temp[eqChoice] = 0;
-        for(int j = 0;j<N;j++){
-            temp[eqChoice] += matrix[eqChoice*N+j]*results[j];
-        }
-    }
-    vectorCompare(temp,constants,N);
-    //printf("Resultado calculado pelo sequencial:%lf\n",temp);
-    //printf("Resultado esperado:%lf\n\n",constants[eqChoice]);
+    // float temp = 0;
+    // int eqChoice = 0;
+    // scanf("%d",&eqChoice);
+    // temp[eqChoice] = 0;
+    // for(int j = 0;j<N;j++){
+    //     temp[eqChoice] += matrix[eqChoice*N+j]*results[j];
+    // }
+    // printf("Resultado calculado pelo sequencial:%lf\n",temp);
+    // printf("Resultado esperado:%lf\n\n",constants[eqChoice]);
     //END EQUATION RESULT REQUESTED BY USER
 
     free(matrix);
