@@ -1,33 +1,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "jacobiseq.h"
 
-float* jacobiseq(float* matrix,float* constants,int N,float errorTolerance,int maxIterations){
+float* jacobiseq(float* matrix,float* constants,int N,float errorTolerance){
 
     float* lastVariables = malloc(sizeof(float)*N);
-    if (constants == NULL) {
+    if (lastVariables == NULL) {
         fprintf(stderr, "Error: No sufficient memory!\n");
         exit(1);
     }
     float* currentVariables = malloc(sizeof(float)*N);
-    if (constants == NULL) {
+    if (currentVariables == NULL) {
         fprintf(stderr, "Error: No sufficient memory!\n");
         exit(1);
     }
 
     for(int i = 0;i<N;i++){
-        lastVariables[i] = 0;
+        lastVariables[i] = constants[i];
     }
 
-    int counter = 0;
-    int convergenceProved = 1;
+    int converged = 0;
 
     do {
-        convergenceProved = 1;
+        converged = 1;
+        float maxError = -1;
+        float maxVariable = -1;
+
         for(int i = 0;i <N;i++){
             float sum = 0;
 
-            for(int j = 0; j < i; j++){ // Summing all j < i
+            for(int j = 0; j < N; j++){ // Summing all j < i
                 sum += matrix[i * N + j] * lastVariables[j];
             }
 
@@ -35,16 +38,22 @@ float* jacobiseq(float* matrix,float* constants,int N,float errorTolerance,int m
                 sum += matrix[i * N + j] * lastVariables[j];
             }
 
-            currentVariables[i] = (constants[i]-sum)/matrix[i*N+i];
-            convergenceProved &= !(fabs(currentVariables[i]- lastVariables[i]) > errorTolerance);
+            currentVariables[i] = (constants[i]-sum);
+
+            maxError = fmax(maxError,fabs(currentVariables[i]-lastVariables[i]));
+            maxVariable = fmax(maxVariable,fabs(currentVariables[i]));
         }
 
+        float mr = maxError/maxVariable;
+        converged = !(mr>errorTolerance);
+        
         float* temp = lastVariables;
         lastVariables = currentVariables;
         currentVariables = temp;
 
-        counter++;
-    } while (!convergenceProved && counter < maxIterations);
+    } while (!converged);
+
+    //printf("Numero de iterações:%d\n",count);
 
     free(currentVariables);
     return lastVariables; //Free outside

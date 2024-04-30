@@ -4,6 +4,7 @@
         "stdio.h": "c",
         "matrix.h": "c",
         "stdlib.h": "c",
-        "math.h": "c"
+        "math.h": "c",
+        "matrix_and_vectors.h": "c"
     }
 }

@@ -5,6 +5,12 @@ float* createConstants(int N);
 
 float* createMatrix(int N);
 
+float* normalizeMatrix(float* matrix,int N);
+
+float* getDiagonalFromMatrix(float* matrix, int N);
+
+float* normalizeConstants(float* vectorToNormalize,float* vectorDivisor, int N);
+
 void printMatrix(float* matrix,int N);
 
 void printConstants(float* constants,int N);

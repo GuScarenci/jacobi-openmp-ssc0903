@@ -125,8 +125,8 @@ def generate_csv(data, file_name='data.csv'):
     print(f"CSV file successfuly generated at {file_path}!")
 
 compile()
-sizes = [1000, 10000, 100000, 1000000]
-threads = [2, 4, 8]
+sizes = [100,500,1000,2000,3000,10000,20000]
+threads = [2, 4, 8, 10]
 runs = int(sys.argv[1]) if len(sys.argv) > 1 else 10
 raw_data = run(runs, sizes, threads)
 data = interpret_data(raw_data, show_data=True)
