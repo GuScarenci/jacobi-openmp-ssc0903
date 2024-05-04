@@ -3,7 +3,7 @@
 #include <math.h>
 #include "matrix_and_vectors.h"
 
-float* createConstants(int N){
+float* createConstants(int N,int randLimit){
     float* constants;
     constants = malloc(sizeof(float)*N);
     if (constants == NULL) {
@@ -12,12 +12,16 @@ float* createConstants(int N){
     }
 
     for(int i = 0;i<N;i++){
-        constants[i] =(float)(rand()%100); // celulas da matriz com uma magnitude menor
+        if(randLimit == 0){
+            constants[i] = (rand() - (RAND_MAX/2)) / 1000.0f; // celulas da matriz com uma magnitude menor
+        }else{
+            constants[i] =(float)(rand()%randLimit);
+        }
     }
     return constants;
 }
 
-float* createMatrix(int N){
+float* createMatrix(int N,int randLimit){
 
     //ALLOCATES MATRIX
     float* matrix = malloc(sizeof(float)*N*N);
@@ -31,11 +35,15 @@ float* createMatrix(int N){
         float sum = 0;
         for(int j = 0;j<N;j++){
             if(j != i){ 
-                matrix[i*N + j] = (float)(rand()%100);
+                if(randLimit==0){
+                    matrix[i*N + j] = (rand() - (RAND_MAX/2)) / 1000.0f;
+                }else{
+                    matrix[i*N + j] = (float)(rand()%randLimit);
+                }
                 sum += fabs(matrix[i*N + j]);
             }
         }
-        matrix[i*N + i] = sum+100;
+        matrix[i*N + i] = sum+1;
     }
 
     return matrix;
@@ -113,9 +121,10 @@ void printConstants(float* constants,int N){
 void vectorCompare(float* a,float* b,int N){
     for(int i=0;i<N;i++){
         if(fabs(a[i] - b[i]) > 0.5){
-            printf("%f %f\n",a[i],b[i]);
             printf("Results DON'T match!\n");
-            return;
+            printf("%f %f\n",a[i],b[i]);
+            printf("%f\n",a[i]-b[i]);
+            printf("%f\n\n",(a[i]-b[i])/b[i]);
         }
     }
     printf("Result match!\n");

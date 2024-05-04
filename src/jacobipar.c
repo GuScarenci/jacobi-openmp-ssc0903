@@ -24,6 +24,8 @@ float* jacobipar(float* matrix,float* constants,int N,float errorTolerance){
 
     float mr = 1;
 
+    int count = 0;
+
     do {
         float maxError = -1;
         float maxVariable = -1;
@@ -53,8 +55,10 @@ float* jacobipar(float* matrix,float* constants,int N,float errorTolerance){
         float* temp = lastVariables;
         lastVariables = currentVariables;
         currentVariables = temp;
-
+        count++;
     } while (mr>errorTolerance);
+
+    printf("Interações: %d\n",count);
 
     free(currentVariables);
     return lastVariables; //Free outside
