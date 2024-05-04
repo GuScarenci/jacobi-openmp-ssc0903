@@ -38,6 +38,9 @@ int main(int argc, char *argv[]){
     float* diagonal = getDiagonalFromMatrix(matrix,N);
     float* constants = createConstants(N,randLimit);
     float* normalizedConstants = normalizeConstants(constants,diagonal,N);
+    free(diagonal);
+    free(matrix);
+    free(constants);
     //END CREATES MATRIX
 
     omp_set_num_threads(T);
@@ -53,6 +56,9 @@ int main(int argc, char *argv[]){
     delta = (omp_get_wtime() - delta);
     printf("JacobiTime: %lfms\n",delta);
 
+    free(normalizedMatrix);
+    free(normalizedConstants);
+
     //SHOWS IF RESULTS MATCH
     // float* temp = (float*)malloc(sizeof(float)*N);
     // for(int eqChoice = 0;eqChoice<N;eqChoice++){
@@ -64,6 +70,9 @@ int main(int argc, char *argv[]){
     //END SHOWS IF RESULTS MATCH
 
     //SHOWS EQUATION RESULT REQUESTED BY USER
+    srand(seed);
+    matrix = createMatrix(N,randLimit);
+    constants = createConstants(N,randLimit);
     float temp = 0;
     for(int j = 0;j<N;j++){
         temp += matrix[eq*N+j]*results[j];
