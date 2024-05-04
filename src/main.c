@@ -42,6 +42,7 @@ int main(int argc, char *argv[]){
 
     omp_set_num_threads(T);
 
+    double delta = omp_get_wtime();
     //JACOBI
 #ifdef JACOBIPAR
     float* results = jacobipar(normalizedMatrix,normalizedConstants,N,tolerance);
@@ -49,6 +50,8 @@ int main(int argc, char *argv[]){
     float* results = jacobiseq(normalizedMatrix,normalizedConstants,N,tolerance);
 #endif
     //END JACOBI
+    delta = (omp_get_wtime() - delta);
+    printf("JacobiTime: %lfms\n",delta);
 
     //SHOWS IF RESULTS MATCH
     // float* temp = (float*)malloc(sizeof(float)*N);
