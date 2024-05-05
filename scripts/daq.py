@@ -60,7 +60,7 @@ def run(runs, sizes, threads):
                     command = f'make run_par ARGS="{size} {thread} {0}"'
                 result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-                jacobi_time_pattern = r'JacobiTime:\s+(\d+\.\d+ms)'
+                jacobi_time_pattern = r'JacobiTime:\s+(\d+\.\d+s)'
                 time_pattern = r'real\s+(\d+m\d+\.\d+s)\nuser\s+(\d+m\d+\.\d+s)\nsys\s+(\d+m\d+\.\d+s)'
                 match = re.search(time_pattern, result.stderr)
                 response_minutes = float(match.group(1).split('m')[0])

@@ -58,8 +58,8 @@ int main(int argc, char *argv[]){
 #endif
     //END JACOBI
 
-    delta = (omp_get_wtime() - delta)*1000;
-    printf("JacobiTime: %lfms\n",delta);
+    delta = (omp_get_wtime() - delta);
+    printf("JacobiTime: %lfs\n",delta);
 
     free(normalizedMatrix);
     free(normalizedConstants);
