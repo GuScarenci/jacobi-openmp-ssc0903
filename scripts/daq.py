@@ -40,6 +40,7 @@ def clean_terminal():
 
 
 def run(runs, sizes, threads):
+    randLimit = 10
     response_times = {}
     # run the code
     if 1 not in threads:
