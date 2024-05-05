@@ -6,6 +6,12 @@
 
 float* jacobipar(float* matrix,float* constants,int N,float errorTolerance){
 
+    float* sum = malloc(sizeof(float)*N);
+    if (sum == NULL) {
+        fprintf(stderr, "Error: No sufficient memory!\n");
+        exit(1);
+    }
+
     float* lastVariables = malloc(sizeof(float)*N);
     if (lastVariables == NULL) {
         fprintf(stderr, "Error: No sufficient memory!\n");
@@ -22,24 +28,36 @@ float* jacobipar(float* matrix,float* constants,int N,float errorTolerance){
         lastVariables[i] = constants[i];
     }
 
+    #pragma omp parallel for simd
+    for(int i = 0;i<N;i++){
+        sum[i] = 0;
+    }
+
     float mr = 1;
 
-    int count = 0;
+    int stop = 0;
 
     do {
+        #pragma omp parallel for simd
+        for(int i = 0;i<N;i++){
+            sum[i] = 0;
+        }
+        
         float maxError = -1;
         float maxVariable = -1;
 
-        #pragma omp parallel for reduction(max:maxError,maxVariable) shared(lastVariables,currentVariables)
-            for(int i = 0;i <N;i++){
-                float sum = 0;
+        #pragma omp parallel for shared(lastVariables,currentVariables,sum) collapse(2)
+        for(int i = 0;i <N;i++){
+            for(int j = 0; j < N; j++){
+                sum[i] += matrix[i * N + j] * lastVariables[j];
+            }
+        }
 
-                #pragma omp simd reduction(+:sum)
-                for(int j = 0; j < N; j++){
-                    sum += matrix[i * N + j] * lastVariables[j];
-                }
-                
-                currentVariables[i] = (constants[i]-sum);
+
+        #pragma omp task shared(stop)
+        {
+            for(int i = 0;i<N;i++){
+                currentVariables[i] = (constants[i]-sum[i]);
                 float currentError = fabs(currentVariables[i] - lastVariables[i]);
                 if (currentError > maxError) {
                     maxError = currentError;
@@ -49,16 +67,15 @@ float* jacobipar(float* matrix,float* constants,int N,float errorTolerance){
                     maxVariable = absCurrentVariable;
                 }
             }
-
-        mr = maxError/maxVariable;
+            mr = maxError/maxVariable;
+            stop = !(mr>errorTolerance);
+        }
         
         float* temp = lastVariables;
         lastVariables = currentVariables;
         currentVariables = temp;
-        count++;
-    } while (mr>errorTolerance);
 
-    printf("Interações: %d\n",count);
+    } while (!stop);
 
     free(currentVariables);
     return lastVariables; //Free outside
