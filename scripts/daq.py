@@ -38,6 +38,7 @@ def clean_terminal():
 
 
 def run(runs, sizes, threads):
+    randLimit = 10
     response_times = {}
     # run the code
     print("Starting runs...")
@@ -48,7 +49,7 @@ def run(runs, sizes, threads):
         for size in sizes:
             clean_terminal()
             print(f'Running with matrix of size {size} and sequentially')
-            command = f'make run_seq ARGS="{size} {1} {0}"'
+            command = f'make run_seq ARGS="{size} {1} {0} {0} {randLimit}"'
             result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             output = result.stderr if result.stderr else result.stdout
 
@@ -67,7 +68,7 @@ def run(runs, sizes, threads):
                 clean_terminal()
                 print(f'Running with matrix of size {size} and {thread} threads')
 
-                command = f'make run_par ARGS="{size} {thread} {0}"'
+                command = f'make run_par ARGS="{size} {thread} {0} {0} {randLimit}"'
                 result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 output = result.stderr if result.stderr else result.stdout
 
@@ -168,7 +169,7 @@ def generate_csv(data, file_name='data.csv'):
     print(f"CSV file successfuly generated at {file_path}!")
 
 compile()
-sizes = [500, 1000, 2000, 4000, 8000, 16000, 32000]
+sizes = [500, 1000, 2000, 4000]
 threads = [2, 4, 8, 12]
 runs = int(sys.argv[1]) if len(sys.argv) > 1 else 10
 raw_data = run(runs, sizes, threads)
