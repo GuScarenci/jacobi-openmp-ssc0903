@@ -30,7 +30,7 @@ float* jacobipar(float* matrix,float* constants,int N,float errorTolerance){
         float maxError = -1;
         float maxVariable = -1;
 
-        #pragma omp parallel for reduction(max:maxError,maxVariable) shared(lastVariables,currentVariables) schedule(dynamic,10)
+        #pragma omp parallel for reduction(max:maxError,maxVariable) shared(lastVariables,currentVariables)
             for(int i = 0;i <N;i++){
                 float sum = 0;
 
