@@ -38,3 +38,18 @@ A saída do script será um arquivo `res/data.csv` com a média, mediana, desvio
 - [Gustavo Scarenci](github.com/GuScarenci) - 12547792
 - [Hugo Nakamura](https://github.com/ikuyorih9) - 12732037
 - [Matheus Cirillo](github.com/cirillom) - 12547750
+
+# Todo's e dúvidas!
+
+- [X] Pode usar omp_wget_time?
+    Sim
+
+2 -  Se tiver que usar só o time, gera uma build pra pegar o input do usuário que mostra a equação e uma que não pega (pq pra usar time só faz sentido sem o input)
+
+3 - É para tratar input inválido?
+
+4 -  Como garantir diagonal dominante?
+
+5 - Qual ordem de matriz é pra ser executada em tempo razoavel? (qual o número máximo que na prática o Paulo vai testar)
+6 - O speedup do meu código tá razoavel?
+7 - Precisa paralelizar entrada?
