@@ -1,9 +1,15 @@
 #ifndef __matrix_H__ 
 #define __matrix_H__
 
-float* createConstants(int N);
+float* createConstants(int N,int randLimit);
 
-float* createMatrix(int N);
+float* createMatrix(int N,int randLimit);
+
+float* normalizeMatrix(float* matrix,int N);
+
+float* getDiagonalFromMatrix(float* matrix, int N);
+
+float* normalizeConstants(float* vectorToNormalize,float* vectorDivisor, int N);
 
 void printMatrix(float* matrix,int N);
 

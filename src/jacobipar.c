@@ -2,65 +2,63 @@
 #include <stdlib.h>
 #include <math.h>
 #include <omp.h>
+#include "jacobipar.h"
 
-float* jacobipar(float* matrix,float* constants,int N,float errorTolerance,int maxIterations){
+float* jacobipar(float* matrix,float* constants,int N,float errorTolerance){
 
     float* lastVariables = malloc(sizeof(float)*N);
-    if (constants == NULL) {
+    if (lastVariables == NULL) {
         fprintf(stderr, "Error: No sufficient memory!\n");
         exit(1);
     }
     float* currentVariables = malloc(sizeof(float)*N);
-    if (constants == NULL) {
+    if (currentVariables == NULL) {
         fprintf(stderr, "Error: No sufficient memory!\n");
         exit(1);
     }
 
-    #pragma omp simd //performs a little better than "parallel for" for tested cases
+    #pragma omp parallel for simd
     for(int i = 0;i<N;i++){
-        lastVariables[i] = 0;
+        lastVariables[i] = constants[i];
     }
 
-    int counter = 0;
-    int convergenceProved = 1;
-    
+    float mr = 1;
+
+    int count = 0;
+
     do {
-        convergenceProved = 1;
+        float maxError = -1;
+        float maxVariable = -1;
 
-        #pragma omp parallel for shared(lastVariables, currentVariables) reduction(&&:convergenceProved)
-        for (int i = 0; i < N; i++) {
+        #pragma omp parallel for reduction(max:maxError,maxVariable) shared(lastVariables,currentVariables) schedule(dynamic,10)
+            for(int i = 0;i <N;i++){
+                float sum = 0;
 
-             float sum = 0;
-
-            #pragma omp task shared(matrix, lastVariables, sum)
-            {
                 #pragma omp simd reduction(+:sum)
-                for (int j = 0; j < i; j++) {
+                for(int j = 0; j < N; j++){
                     sum += matrix[i * N + j] * lastVariables[j];
+                }
+                
+                currentVariables[i] = (constants[i]-sum);
+                float currentError = fabs(currentVariables[i] - lastVariables[i]);
+                if (currentError > maxError) {
+                    maxError = currentError;
+                }
+                float absCurrentVariable = fabs(currentVariables[i]);
+                if (absCurrentVariable > maxVariable) {
+                    maxVariable = absCurrentVariable;
                 }
             }
 
-            #pragma omp task shared(matrix, lastVariables, sum)
-            {
-                #pragma omp simd reduction(+:sum)
-                for (int j = i + 1; j < N; j++) {
-                    sum += matrix[i * N + j] * lastVariables[j];
-                }
-            }
-
-            #pragma omp taskwait // Wait for all tasks to complete
-
-            currentVariables[i] = (constants[i] - sum) / matrix[i * N + i];
-
-            convergenceProved &= !(fabs(currentVariables[i] - lastVariables[i]) > errorTolerance);
-        }
-
+        mr = maxError/maxVariable;
+        
         float* temp = lastVariables;
         lastVariables = currentVariables;
         currentVariables = temp;
+        count++;
+    } while (mr>errorTolerance);
 
-        counter++;
-    } while (!convergenceProved && counter < maxIterations);
+    printf("Interações: %d\n",count);
 
     free(currentVariables);
     return lastVariables; //Free outside

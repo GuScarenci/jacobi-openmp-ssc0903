@@ -2,7 +2,7 @@ SHELL := /bin/bash
 CC ?= gcc
 ZIP ?= 7za
 PDFLAGS += -march=native
-CFLAGS += -Wall -Wextra -Wpedantic
+CFLAGS += -Wall -Wextra -Wpedantic -Ofast
 LDFLAGS += -lm -fopenmp
 VDFLAGS += --leak-check=full --show-leak-kinds=all -s
 
@@ -17,7 +17,6 @@ CFILES      = $(wildcard src/*.c) $(wildcard src/**/*.c)
 
 .PHONY: all clean zip run run_seq run_par test debug_seq debug_par
 
-all: PDFLAGS += -Ofast
 all: $(EXECUTABLE_SEQ) $(EXECUTABLE_PAR)
 
 $(EXECUTABLE_SEQ): $(CFILES)
