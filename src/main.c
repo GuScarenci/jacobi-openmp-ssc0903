@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
     int T = atoi(argv[2]);
     int seed = atoi(argv[3]);
     int eq = 0;
-    int randLimit = 0;
+    int randLimit = 10;
 
     if(argc>4){
         eq = atoi(argv[4]);

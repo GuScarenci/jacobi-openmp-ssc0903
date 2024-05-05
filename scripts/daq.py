@@ -55,9 +55,9 @@ def run(runs, sizes, threads):
                 p2bar.set_description(f'Threads ({thread})')
                 command = []
                 if thread == 1:
-                    command = f'make run_seq ARGS="{size} {thread} {0}"'
+                    command = f'make run_seq ARGS="{size} {thread} {0} {0} {randLimit}"'
                 else:
-                    command = f'make run_par ARGS="{size} {thread} {0}"'
+                    command = f'make run_par ARGS="{size} {thread} {0} {0} {randLimit}"'
                 result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
                 jacobi_time_pattern = r'JacobiTime:\s+(\d+\.\d+s)'
@@ -68,7 +68,7 @@ def run(runs, sizes, threads):
                 response_total = response_minutes * 60 + response_seconds
 
                 match = re.search(jacobi_time_pattern, result.stdout)
-                response_jacobi = float(match.group(1).split('ms')[0])
+                response_jacobi = float(match.group(1).split('s')[0])
 
                 response_times.setdefault(size, {}).setdefault(thread, []).append((response_total, response_jacobi))
     return response_times
