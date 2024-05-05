@@ -41,15 +41,64 @@ A saída do script será um arquivo `res/data.csv` com a média, mediana, desvio
 
 # Todo's e dúvidas!
 
-- [X] Pode usar omp_wget_time?
-    Sim
+- [X] **Pode usar omp_wget_time?**
+    
+    Sim, mas ainda é necessário considerar a saída do `time`.
 
-2 -  Se tiver que usar só o time, gera uma build pra pegar o input do usuário que mostra a equação e uma que não pega (pq pra usar time só faz sentido sem o input)
+- [X] **O input do usuário para escolher uma equação do sistema é feito como?**
 
-3 - É para tratar input inválido?
+    Quarto argumento na hora de rodar o programa: `./jacobipar N T seed Eq`
 
-4 -  Como garantir diagonal dominante?
+- [X] **É para tratar input inválido?**
 
-5 - Qual ordem de matriz é pra ser executada em tempo razoavel? (qual o número máximo que na prática o Paulo vai testar)
-6 - O speedup do meu código tá razoavel?
-7 - Precisa paralelizar entrada?
+    Não, código apenas considera inputs convenientes. 
+
+- [X] **Como garantir diagonal dominante?**
+
+    Soma todos os elementos da linha em módulo, exceto o que constitui a diagonal, soma 1 e joga no elemento da diagonal daquela linha.
+
+- [X] **Precisa paralelizar entrada?**
+
+    Não precisa!
+
+- [ ] **Qual ordem de matriz é pra ser executada em tempo razoável? (Qual o número máximo que na prática o professor vai testar ?)**
+    
+    Indefinido...
+
+- [ ] **O speedup do meu código tá razoavel?**
+
+    Não, tem algo errado...
+
+- [ ] **Qual a limitação do rand()?**
+
+   Indefinido...
+
+# EM MANUTENÇÃO...
+
+## Alguns argumentos extras que adicionei
+
+```./build/jacobipar N T seed Eq randLimit```
+
+N -> tamanho da matriz (obrigatório)
+
+T -> Threads (obrigatório)
+
+seed -> seed do rand (obrigatório)
+
+Eq -> equação para ver o valor (0 por padrão e n faz diferença na perfomance)
+
+randLimit -> Valor de limite do rand(por padrão é 10)
+
+- 0: positivos ilimitados (DEMORA MTO, MESMO PARA MATRIZES MTO PEQUENAS, nem consegui testar).
+
+- -1:"sem limitar" permitindo valores positivos e negativos (vai beeeem rápido, para qualquer matriz, mas sem speedup quase nenhum).
+
+- valores >0: positivos limitados ao valor (Pode ser rápido ou lento dependendo do limite, 100 já começa a ficar bem lento), teve o melhor speedup mas ainda é um speedup super ruim.
+
+## tem 2 branches "atuais"
+
+main -> código com o paralelismo full meu
+
+trying-to-improve-parallelism -> código com todas as sugestões do paulo sérgio
+
+provavelmente o sweet spot é algo entre essas 2, mas eu fiz vários intermediando entre o meu e o do paulo e a grosso modo n tem  melhora significativa
