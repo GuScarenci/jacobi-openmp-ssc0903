@@ -5,8 +5,6 @@ float* createConstants(int N,int randLimit);
 
 float* createMatrix(int N,int randLimit,float* diagonal);
 
-float* getDiagonalFromMatrix(float* matrix, int N);
-
 float* normalizeConstants(float* vectorToNormalize,float* vectorDivisor, int N);
 
 void printMatrix(float* matrix,int N);

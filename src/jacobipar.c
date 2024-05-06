@@ -58,11 +58,11 @@ float* jacobipar(float* matrix,float* constants,int N,float errorTolerance){
         {
             for(int i = 0;i<N;i++){
                 currentVariables[i] = (constants[i]-sum[i]);
-                float currentError = fabs(currentVariables[i] - lastVariables[i]);
+                float currentError = fabsf(currentVariables[i] - lastVariables[i]);
                 if (currentError > maxError) {
                     maxError = currentError;
                 }
-                float absCurrentVariable = fabs(currentVariables[i]);
+                float absCurrentVariable = fabsf(currentVariables[i]);
                 if (absCurrentVariable > maxVariable) {
                     maxVariable = absCurrentVariable;
                 }

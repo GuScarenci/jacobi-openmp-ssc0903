@@ -38,11 +38,11 @@ float* jacobiseq(float* matrix,float* constants,int N,float errorTolerance){
 
             currentVariables[i] = (constants[i]-sum);
 
-            float currentError = fabs(currentVariables[i] - lastVariables[i]);
+            float currentError = fabsf(currentVariables[i] - lastVariables[i]);
             if (currentError > maxError) {
                 maxError = currentError;
             }
-            float absCurrentVariable = fabs(currentVariables[i]);
+            float absCurrentVariable = fabsf(currentVariables[i]);
             if (absCurrentVariable > maxVariable) {
                 maxVariable = absCurrentVariable;
             }
@@ -57,7 +57,7 @@ float* jacobiseq(float* matrix,float* constants,int N,float errorTolerance){
 
     } while (mr>errorTolerance);
 
-    printf("Interações: %d\n",count);
+    printf("Iterações: %d\n",count);
 
     free(currentVariables);
     return lastVariables; //Free outside

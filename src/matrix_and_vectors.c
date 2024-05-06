@@ -44,7 +44,7 @@ float* createMatrix(int N,int randLimit,float* diagonal){
                 }else{
                     matrix[i*N + j] = (float)(rand()%randLimit);
                 }
-                sum += fabs(matrix[i*N + j]);
+                sum += fabsf(matrix[i*N + j]);
             }
         }
 
@@ -63,19 +63,6 @@ float* createMatrix(int N,int randLimit,float* diagonal){
     }
 
     return matrix;
-}
-
-float* getDiagonalFromMatrix(float* matrix, int N){
-    float* diagonal;
-    diagonal = malloc(sizeof(float)*N);
-    if (diagonal == NULL) {
-        fprintf(stderr, "Error: No sufficient memory in diagonal allocation!\n");
-        exit(1);
-    }
-    for(int i = 0;i<N;i++){
-        diagonal[i] = matrix[i*N+i];
-    }  
-    return diagonal;
 }
 
 float* normalizeConstants(float* vectorToNormalize,float* vectorDivisor, int N){
@@ -113,7 +100,7 @@ void printConstants(float* constants,int N){
 
 void vectorCompare(float* a,float* b,int N){
     for(int i=0;i<N;i++){
-        if(fabs(a[i] - b[i]) > 0.5){
+        if(fabsf(a[i] - b[i]) > 0.5){
             printf("Results DON'T match!\n");
             printf("%f %f\n",a[i],b[i]);
             printf("%f\n",a[i]-b[i]);
