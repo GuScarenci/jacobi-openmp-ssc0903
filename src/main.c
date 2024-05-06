@@ -33,9 +33,13 @@ int main(int argc, char *argv[]){
     srand(seed);
 
     //CREATES NORMALIZED MATRIX AND CONSTANTS
-    float* matrix = createMatrix(N,randLimit);
-    float* diagonal = getDiagonalFromMatrix(matrix,N);
-    normalizeMatrix(matrix,N);
+    float* diagonal;
+    diagonal = malloc(sizeof(float)*N);
+    if (diagonal == NULL) {
+        fprintf(stderr, "Error: No sufficient memory in diagonal allocation!\n");
+        exit(1);
+    }
+    float* matrix = createMatrix(N,randLimit,diagonal);
     float* constants = createConstants(N,randLimit);
     float* normalizedConstants = normalizeConstants(constants,diagonal,N);
     //END CREATES NORMALIZED MATRIX AND CONSTANTS

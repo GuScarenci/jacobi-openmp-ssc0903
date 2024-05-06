@@ -3,9 +3,7 @@
 
 float* createConstants(int N,int randLimit);
 
-float* createMatrix(int N,int randLimit);
-
-void normalizeMatrix(float* matrix,int N);
+float* createMatrix(int N,int randLimit,float* diagonal);
 
 float* getDiagonalFromMatrix(float* matrix, int N);
 

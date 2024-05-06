@@ -23,7 +23,7 @@ float* createConstants(int N,int randLimit){
     return constants;
 }
 
-float* createMatrix(int N,int randLimit){
+float* createMatrix(int N,int randLimit,float* diagonal){
 
     //ALLOCATES MATRIX
     float* matrix = malloc(sizeof(float)*N*N);
@@ -47,23 +47,22 @@ float* createMatrix(int N,int randLimit){
                 sum += fabs(matrix[i*N + j]);
             }
         }
-        matrix[i*N + i] = sum+1;
-    }
 
-    return matrix;
-}
+        sum+=1;
 
-void normalizeMatrix(float* matrix,int N){
-    //NORMALIZES MATRIX
-    for(int i = 0;i<N;i++){
+        //Stores original diagonal
+        diagonal[i] = sum;
+
+        //normalizes matrix
         for(int j = 0;j<N;j++){
             if(j != i){ 
-                matrix[i*N + j] = matrix[i*N + j]/matrix[i*N+i];
+                matrix[i*N + j] = matrix[i*N + j]/sum;
             }
         }
         matrix[i*N + i] = 0;
     }
-    //END NORMALIZES MATRIX
+
+    return matrix;
 }
 
 float* getDiagonalFromMatrix(float* matrix, int N){
