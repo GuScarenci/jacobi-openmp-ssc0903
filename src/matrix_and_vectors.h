@@ -5,7 +5,7 @@ float* createConstants(int N,int randLimit);
 
 float* createMatrix(int N,int randLimit);
 
-float* normalizeMatrix(float* matrix,int N);
+void normalizeMatrix(float* matrix,int N);
 
 float* getDiagonalFromMatrix(float* matrix, int N);
 

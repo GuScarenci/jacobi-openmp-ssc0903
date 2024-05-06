@@ -32,16 +32,13 @@ int main(int argc, char *argv[]){
     float tolerance = 0.001;
     srand(seed);
 
-    //CREATES MATRIX
+    //CREATES NORMALIZED MATRIX AND CONSTANTS
     float* matrix = createMatrix(N,randLimit);
-    float* normalizedMatrix = normalizeMatrix(matrix,N);
-
     float* diagonal = getDiagonalFromMatrix(matrix,N);
-
+    normalizeMatrix(matrix,N);
     float* constants = createConstants(N,randLimit);
     float* normalizedConstants = normalizeConstants(constants,diagonal,N);
-    free(diagonal);
-    //END CREATES MATRIX
+    //END CREATES NORMALIZED MATRIX AND CONSTANTS
 
     omp_set_num_threads(T);
 
@@ -49,27 +46,31 @@ int main(int argc, char *argv[]){
 
     //JACOBI
 #ifdef JACOBIPAR
-    float* results = jacobipar(normalizedMatrix,normalizedConstants,N,tolerance);
+    float* results = jacobipar(matrix,normalizedConstants,N,tolerance);
 #else
-    float* results = jacobiseq(normalizedMatrix,normalizedConstants,N,tolerance);
+    float* results = jacobiseq(matrix,normalizedConstants,N,tolerance);
 #endif
     //END JACOBI
+    free(normalizedConstants);
 
     delta = (omp_get_wtime() - delta);
     printf("JacobiTime: %lfs\n",delta);
 
-    free(normalizedMatrix);
-    free(normalizedConstants);
 
     //SHOWS EQUATION RESULT REQUESTED BY USER
     float temp = 0;
     for(int j = 0;j<N;j++){
-        temp += matrix[eq*N+j]*results[j];
+        if(j!=eq){
+            temp += diagonal[eq]*matrix[eq*N+j]*results[j];
+        }else{
+            temp += diagonal[eq]*results[j];
+        }
     }
     printf("Resultado calculado:\t%lf\n",temp);
     printf("Resultado esperado:\t%lf\n",constants[eq]);
     //END EQUATION RESULT REQUESTED BY USER
 
+    free(diagonal);
     free(matrix);
     free(constants);
 }

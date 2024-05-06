@@ -53,27 +53,17 @@ float* createMatrix(int N,int randLimit){
     return matrix;
 }
 
-float* normalizeMatrix(float* matrix,int N){
-
-    //ALLOCATES MATRIX
-    float* normalizedMatrix = malloc(sizeof(float)*N*N);
-    if (normalizedMatrix == NULL) {
-        fprintf(stderr, "Error: No sufficient memory in normalized matrix allocation!\n");
-        exit(1);
-    }
-    //END ALLOCATES MATRIX
-
+void normalizeMatrix(float* matrix,int N){
     //NORMALIZES MATRIX
     for(int i = 0;i<N;i++){
         for(int j = 0;j<N;j++){
             if(j != i){ 
-                normalizedMatrix[i*N + j] = matrix[i*N + j]/matrix[i*N+i];
+                matrix[i*N + j] = matrix[i*N + j]/matrix[i*N+i];
             }
         }
-        normalizedMatrix[i*N + i] = 0;
+        matrix[i*N + i] = 0;
     }
     //END NORMALIZES MATRIX
-    return normalizedMatrix;
 }
 
 float* getDiagonalFromMatrix(float* matrix, int N){
