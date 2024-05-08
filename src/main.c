@@ -12,25 +12,21 @@
 int main(int argc, char *argv[]){
 
     //Tratamento de argumentos
-    if(argc < 4 || argc > 6){
-        printf("Wrong number of arguments!\n");
+    if(argc < 4 || argc > 5){
+        printf("Argumentos errados!\n");
         return 1;
     }
     int N = atoi(argv[1]);
     int T = atoi(argv[2]);
     int seed = atoi(argv[3]);
     int eq = 0;
-    int randLimit = 10;
     if(argc>4){
         eq = atoi(argv[4]);
-    }
-    if(argc>5){
-        randLimit = atoi(argv[5]);
     }
     //Fim do tratamento de argumentos
 
     //Criação de matrizes e constantes
-     srand(seed);
+    srand(seed);
     float* matrix = malloc(sizeof(float)*N*N);
     float* diagonal = malloc(sizeof(float)*N);
     float* constants = malloc(sizeof(float)*N);
@@ -38,7 +34,7 @@ int main(int argc, char *argv[]){
         fprintf(stderr, "Erro! Sem memória suficiente para alocação dos vetores!\n");
         exit(1);
     }
-    initiateMatrixAndVectors(matrix,constants,N,randLimit,diagonal);
+    initiateMatrixAndVectors(matrix,constants,N,diagonal);
     //Fim da criação de matrizes e constantes
 
     omp_set_num_threads(T);

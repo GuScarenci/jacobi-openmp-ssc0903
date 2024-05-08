@@ -3,20 +3,16 @@
 #include <math.h>
 #include "matrix_and_vectors.h"
 
-void initiateMatrixAndVectors(float* matrix, float* constants,int N,int randLimit,float* diagonal){
+#define LIMIT_RAND 10
+
+void initiateMatrixAndVectors(float* matrix, float* constants,int N,float* diagonal){
     for(int i = 0;i<N;i++){
 
         //Preenchimento a matriz com números aleatórios a depender de randLimit garantindo diagonal dominante
         float sum = 0;
         for(int j = 0;j<N;j++){
             if(j != i){ 
-                if(randLimit==-1){
-                    matrix[i*N + j] = (rand() - (RAND_MAX/2)) / 1000.0f;
-                }else if(randLimit ==0){
-                    matrix[i*N + j] = (float)(rand());
-                }else{
-                    matrix[i*N + j] = (float)(rand()%randLimit);
-                }
+                matrix[i*N + j] = (float)(rand()%LIMIT_RAND);
                 sum += fabsf(matrix[i*N + j]);
             }
         }
@@ -36,13 +32,7 @@ void initiateMatrixAndVectors(float* matrix, float* constants,int N,int randLimi
         //Fim da normalização da matriz
 
         //Preenchimento das constantes com números aleatórios a depender de randLimit
-        if(randLimit==-1){
-            constants[i] = (rand() - (RAND_MAX/2)) / 1000.0f;
-        }else if(randLimit ==0){
-            constants[i] = (float)(rand());
-        }else{
-            constants[i] = (float)(rand()%randLimit);
-        }
+        constants[i] = (float)(rand()%LIMIT_RAND);
         //Fim do preenchimento das constantes com números aleatórios a depender de randLimit
 
         //Normaliza as constantes
