@@ -3,37 +3,10 @@
 #include <math.h>
 #include "matrix_and_vectors.h"
 
-float* createConstants(int N,int randLimit){
-    float* constants;
-    constants = malloc(sizeof(float)*N);
-    if (constants == NULL) {
-        fprintf(stderr, "Error: No sufficient memory in constants allocation!\n");
-        exit(1);
-    }
-
+void initiateMatrixAndVectors(float* matrix, float* constants,int N,int randLimit,float* diagonal){
     for(int i = 0;i<N;i++){
-        if(randLimit == -1){
-            constants[i] = (rand() - (RAND_MAX/2)) / 1000.0f;
-        }else if(randLimit == 0){
-            constants[i] =(float)(rand());
-        }else{
-            constants[i] =(float)(rand()%randLimit);
-        }
-    }
-    return constants;
-}
 
-float* createMatrix(int N,int randLimit,float* diagonal){
-
-    //ALLOCATES MATRIX
-    float* matrix = malloc(sizeof(float)*N*N);
-    if (matrix == NULL) {
-        fprintf(stderr, "Error: No sufficient memory in matrix allocation!\n");
-        exit(1);
-    }
-
-    //CREATES RANDOM VALUES WHILE ENSURING DOMINANT DIAGONAL MATRIX
-    for(int i = 0;i<N;i++){
+        //Preenchimento a matriz com números aleatórios a depender de randLimit garantindo diagonal dominante
         float sum = 0;
         for(int j = 0;j<N;j++){
             if(j != i){ 
@@ -47,65 +20,32 @@ float* createMatrix(int N,int randLimit,float* diagonal){
                 sum += fabsf(matrix[i*N + j]);
             }
         }
+        matrix[i*N+i] = sum + 1;
+        //Fim do preenchimento da matriz
 
-        sum+=1;
+        //Armazena a diagonal original
+        diagonal[i] = matrix[i*N+i];
 
-        //Stores original diagonal
-        diagonal[i] = sum;
-
-        //normalizes matrix
+        //Normalização da matriz
         for(int j = 0;j<N;j++){
             if(j != i){ 
-                matrix[i*N + j] = matrix[i*N + j]/sum;
+                matrix[i*N + j] = matrix[i*N + j]/diagonal[i];
             }
         }
         matrix[i*N + i] = 0;
-    }
+        //Fim da normalização da matriz
 
-    return matrix;
-}
-
-float* normalizeConstants(float* vectorToNormalize,float* vectorDivisor, int N){
-    float* normalizedConstants;
-    normalizedConstants = malloc(sizeof(float)*N);
-    if (normalizedConstants == NULL) {
-        fprintf(stderr, "Error: No sufficient memory in diagonal allocation!\n");
-        exit(1);
-    }
-
-    for(int i = 0;i<N;i++){
-        normalizedConstants[i] = vectorToNormalize[i]/vectorDivisor[i];
-    }  
-
-    return normalizedConstants;
-}
-
-void printMatrix(float* matrix,int N){
-    for(int i = 0;i<N;i++){
-        for(int j =0;j<N;j++){
-            printf("%lf \t",matrix[i*N + j]);
+        //Preenchimento das constantes com números aleatórios a depender de randLimit
+        if(randLimit==-1){
+            constants[i] = (rand() - (RAND_MAX/2)) / 1000.0f;
+        }else if(randLimit ==0){
+            constants[i] = (float)(rand());
+        }else{
+            constants[i] = (float)(rand()%randLimit);
         }
-        printf("\n");
-    }
-    printf("\n");
-}
+        //Fim do preenchimento das constantes com números aleatórios a depender de randLimit
 
-void printConstants(float* constants,int N){
-    for(int i = 0;i<N;i++){
-        printf("%lf ",constants[i]);
-        printf("\t");
+        //Normaliza as constantes
+        constants[i] = constants[i]/diagonal[i];
     }
-     printf("\n");
 }
-
-void vectorCompare(float* a,float* b,int N){
-    for(int i=0;i<N;i++){
-        if(fabsf(a[i] - b[i]) > 0.5){
-            printf("Results DON'T match!\n");
-            printf("%f %f\n",a[i],b[i]);
-            printf("%f\n",a[i]-b[i]);
-            printf("%f\n\n",(a[i]-b[i])/b[i]);
-        }
-    }
-    printf("Result match!\n");
-}   

@@ -7,17 +7,15 @@
 float* jacobipar(float* matrix,float* constants,int N,float errorTolerance){
 
     float* lastVariables = malloc(sizeof(float)*N);
-    if (lastVariables == NULL) {
-        fprintf(stderr, "Error: No sufficient memory!\n");
-        exit(1);
-    }
 
     float* currentVariables = malloc(sizeof(float)*N);
-    if (currentVariables == NULL) {
-        fprintf(stderr, "Error: No sufficient memory!\n");
+
+    if (lastVariables == NULL || currentVariables == NULL) {
+        fprintf(stderr, "Erro! Sem memória o suficiente!\n");
         exit(1);
     }
 
+    //Chute inicial igual a B
     #pragma omp parallel for simd
     for(int i = 0;i<N;i++){
         lastVariables[i] = constants[i];
@@ -25,8 +23,10 @@ float* jacobipar(float* matrix,float* constants,int N,float errorTolerance){
 
     int stop = 0;
     int count = 0;
+
     do {
 
+        //Cálculo do vetor X_k+1
         #pragma omp parallel for shared(lastVariables,currentVariables,matrix)
         for(int i = 0;i <N;i++){
             float sum = 0;
@@ -37,7 +37,9 @@ float* jacobipar(float* matrix,float* constants,int N,float errorTolerance){
             }
             currentVariables[i] = (constants[i]-sum);
         }
+        //Fim do cálculo do vetor X_k+1
 
+        //Verificação do critério de convergência
         #pragma omp task shared(stop) firstprivate(currentVariables, lastVariables)
         {
             float mr = 1;
@@ -58,10 +60,14 @@ float* jacobipar(float* matrix,float* constants,int N,float errorTolerance){
             mr = maxError/maxVariable;
             stop = !(mr>errorTolerance);
         }
+        //Fim da verificação do critério de convergência
         
+        //Atualização do vetor X_k com o vetor X_k+1
         float* temp = lastVariables;
         lastVariables = currentVariables;
         currentVariables = temp;
+        //Fim da atualização do vetor X_k com o vetor X_k+1
+
         count++;
 
     } while (!stop);
@@ -69,5 +75,5 @@ float* jacobipar(float* matrix,float* constants,int N,float errorTolerance){
     printf("Iterações: %d\n",count);
 
     free(currentVariables);
-    return lastVariables; //Free outside
+    return lastVariables; //Essa variável tem que ser liberada fora!
 }

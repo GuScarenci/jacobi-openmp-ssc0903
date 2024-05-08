@@ -7,9 +7,11 @@
 #include "jacobipar.h"
 #include "matrix_and_vectors.h"
 
+#define TOLERANCE 0.001
+
 int main(int argc, char *argv[]){
 
-    //TREATS ARGUMENTS
+    //Tratamento de argumentos
     if(argc < 4 || argc > 6){
         printf("Wrong number of arguments!\n");
         return 1;
@@ -19,49 +21,40 @@ int main(int argc, char *argv[]){
     int seed = atoi(argv[3]);
     int eq = 0;
     int randLimit = 10;
-
     if(argc>4){
         eq = atoi(argv[4]);
     }
-
     if(argc>5){
         randLimit = atoi(argv[5]);
     }
-    //END TREATS ARGUMENTS
+    //Fim do tratamento de argumentos
 
-    float tolerance = 0.001;
-    srand(seed);
-
-    //CREATES NORMALIZED MATRIX AND CONSTANTS
-    float* diagonal;
-    diagonal = malloc(sizeof(float)*N);
-    if (diagonal == NULL) {
-        fprintf(stderr, "Error: No sufficient memory in diagonal allocation!\n");
+    //Criação de matrizes e constantes
+     srand(seed);
+    float* matrix = malloc(sizeof(float)*N*N);
+    float* diagonal = malloc(sizeof(float)*N);
+    float* constants = malloc(sizeof(float)*N);
+    if (matrix == NULL || diagonal == NULL || constants == NULL) {
+        fprintf(stderr, "Erro! Sem memória suficiente para alocação dos vetores!\n");
         exit(1);
     }
-    float* matrix = createMatrix(N,randLimit,diagonal);
-    float* constants = createConstants(N,randLimit);
-    float* normalizedConstants = normalizeConstants(constants,diagonal,N);
-    //END CREATES NORMALIZED MATRIX AND CONSTANTS
+    initiateMatrixAndVectors(matrix,constants,N,randLimit,diagonal);
+    //Fim da criação de matrizes e constantes
 
     omp_set_num_threads(T);
 
     double delta = omp_get_wtime();
-
-    //JACOBI
+    //Jacobi
 #ifdef JACOBIPAR
-    float* results = jacobipar(matrix,normalizedConstants,N,tolerance);
+    float* results = jacobipar(matrix,constants,N,TOLERANCE);
 #else
-    float* results = jacobiseq(matrix,normalizedConstants,N,tolerance);
+    float* results = jacobiseq(matrix,constants,N,TOLERANCE);
 #endif
-    //END JACOBI
-    free(normalizedConstants);
-
     delta = (omp_get_wtime() - delta);
     printf("JacobiTime: %lfs\n",delta);
+    //Fim Jacobi
 
-
-    //SHOWS EQUATION RESULT REQUESTED BY USER
+    //Saída da equação escolhida pelo usuário!
     float temp = 0;
     for(int j = 0;j<N;j++){
         if(j!=eq){
@@ -71,10 +64,10 @@ int main(int argc, char *argv[]){
         }
     }
     printf("Resultado calculado:\t%lf\n",temp);
-    printf("Resultado esperado:\t%lf\n",constants[eq]);
-    //END EQUATION RESULT REQUESTED BY USER
+    printf("Resultado esperado:\t%lf\n",constants[eq]*diagonal[eq]);
+    //Fim da saída da equação escolhida pelo usuário
 
-    free(diagonal);
     free(matrix);
+    free(diagonal);
     free(constants);
 }

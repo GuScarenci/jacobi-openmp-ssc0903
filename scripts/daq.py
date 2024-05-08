@@ -40,7 +40,7 @@ def clean_terminal():
 
 
 def run(runs, sizes, threads):
-    randLimit = 10
+    randLimit = 100
     response_times = {}
     # run the code
     if 1 not in threads:
@@ -131,7 +131,7 @@ def generate_csv(data, file_name='data.csv'):
     print(f"CSV file successfuly generated at {file_path}!")
 
 compile()
-sizes = [100,500,1000,2000]
+sizes = [400,1600,3200]
 threads = [4,8,12]
 runs = int(sys.argv[1]) if len(sys.argv) > 1 else 3
 raw_data = run(runs, sizes, threads)
