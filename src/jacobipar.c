@@ -46,7 +46,7 @@ float* jacobipar(float* matrix,float* constants,int N,float errorTolerance){
             float maxError = -1;
             float maxVariable = -1;
             
-            #pragma omp simd reduction(max:maxError,maxVariable)
+            #pragma omp simd reduction(max:maxError,maxVariable) 
             for(int i = 0;i<N;i++){
                 float currentError = fabsf(currentVariables[i] - lastVariables[i]);
                 if (currentError > maxError) {

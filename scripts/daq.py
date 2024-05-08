@@ -40,7 +40,6 @@ def clean_terminal():
 
 
 def run(runs, sizes, threads):
-    randLimit = 100
     response_times = {}
     # run the code
     if 1 not in threads:
@@ -55,9 +54,9 @@ def run(runs, sizes, threads):
                 p2bar.set_description(f'Threads ({thread})')
                 command = []
                 if thread == 1:
-                    command = f'make run_seq ARGS="{size} {thread} {0} {0} {randLimit}"'
+                    command = f'make run_seq ARGS="{size} {thread} {0} {0}"'
                 else:
-                    command = f'make run_par ARGS="{size} {thread} {0} {0} {randLimit}"'
+                    command = f'make run_par ARGS="{size} {thread} {0} {0}"'
                 result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
                 jacobi_time_pattern = r'JacobiTime:\s+(\d+\.\d+s)'
