@@ -3,6 +3,7 @@ import subprocess
 import re
 import statistics
 import sys
+import time
 
 from tqdm import tqdm
 
@@ -78,8 +79,8 @@ def run(runs, sizes, threads):
 def interpret_data(raw_data, show_data:bool=False):
     try:
         data = {}
-        for size in tqdm(raw_data, desc='Loads'):
-            for thread in tqdm(raw_data[size], desc='Threads', leave=False):
+        for size in raw_data:
+            for thread in raw_data[size]:
                 key = (size, thread)
                 full_program_times = [i[0] for i in raw_data[size][thread]]
                 jacobi_times = [i[1] for i in raw_data[size][thread]]
@@ -132,7 +133,19 @@ def generate_csv(data, file_name='data.csv'):
 compile()
 sizes = [100, 500, 1000]
 threads = [2,4,8,12]
+#get current OS time
+tempo = time.time()
 runs = int(sys.argv[1]) if len(sys.argv) > 1 else 3
 raw_data = run(runs, sizes, threads)
 data = interpret_data(raw_data, show_data=False)
 generate_csv(data)
+tempo = time.time() - tempo
+#convert seconds to hours:minutes:seconds
+tempo = tempo/3600
+hours = int(tempo)
+tempo = (tempo - hours) * 60
+minutes = int(tempo)
+tempo = (tempo - minutes) * 60
+seconds = int(tempo)
+tempo = f"{hours}h {minutes}m {seconds}s"
+print(f"Execution time: {tempo}")
