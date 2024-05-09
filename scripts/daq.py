@@ -44,7 +44,7 @@ def run(runs, sizes, threads):
     # run the code
     if 1 not in threads:
         threads = [1] + threads
-    for _ in tqdm(range(runs), desc='Runs'):
+    for r in tqdm(range(runs), desc='Runs'):
         pbar = tqdm(sizes, total=len(sizes), desc='Sizes', leave=False)
         for size in pbar:
             pbar.set_description(f'Loads ({size})')
@@ -70,10 +70,12 @@ def run(runs, sizes, threads):
                 response_jacobi = float(match.group(1).split('s')[0])
 
                 response_times.setdefault(size, {}).setdefault(thread, []).append((response_total, response_jacobi))
+        #finished a run
+        data = interpret_data(response_times)
+        generate_csv(data, file_name=f'data_{r+1}.csv')
     return response_times
 
 def interpret_data(raw_data, show_data:bool=False):
-    print('Interpreting data...')
     try:
         data = {}
         for size in tqdm(raw_data, desc='Loads'):
@@ -114,11 +116,10 @@ def interpret_data(raw_data, show_data:bool=False):
     return data
 
 def generate_csv(data, file_name='data.csv'):
-    file_location = 'res/'
+    file_location = 'out/'
     if not os.path.exists(file_location):
         os.makedirs(file_location)
     file_path = file_location + file_name
-    print(f'Generating CSV file in...')
     try:
         with open(file_path, 'w') as file:
             file.write('Size,Threads,MedianSeq(F),MeanSeq(F),StdevSeq(F),MedianSeq(J),MeanSeq(J),StdevSeq(J),Speedup(F),Speedup(J),Efficiency(F),Efficiency(J)\n')
@@ -127,11 +128,10 @@ def generate_csv(data, file_name='data.csv'):
                 
     except:
         exit('Error: could not write to file')
-    print(f"CSV file successfuly generated at {file_path}!")
 
 compile()
-sizes = [400,1600,3200]
-threads = [4,8,12]
+sizes = [100, 500, 1000]
+threads = [2,4,8,12]
 runs = int(sys.argv[1]) if len(sys.argv) > 1 else 3
 raw_data = run(runs, sizes, threads)
 data = interpret_data(raw_data, show_data=False)
