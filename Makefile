@@ -2,7 +2,7 @@ SHELL := /bin/bash
 CC ?= gcc
 ZIP ?= 7za
 PDFLAGS += -march=native
-CFLAGS += -Wall -Wextra -Wpedantic -Ofast
+CFLAGS += -Wall -Wextra -Wpedantic -O1
 LDFLAGS += -lm -fopenmp
 VDFLAGS += --leak-check=full --show-leak-kinds=all -s
 

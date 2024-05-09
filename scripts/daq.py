@@ -3,6 +3,7 @@ import subprocess
 import re
 import statistics
 import sys
+import time
 
 from tqdm import tqdm
 
@@ -40,12 +41,11 @@ def clean_terminal():
 
 
 def run(runs, sizes, threads):
-    randLimit = 10
     response_times = {}
     # run the code
     if 1 not in threads:
         threads = [1] + threads
-    for _ in tqdm(range(runs), desc='Runs'):
+    for r in tqdm(range(runs), desc='Runs'):
         pbar = tqdm(sizes, total=len(sizes), desc='Sizes', leave=False)
         for size in pbar:
             pbar.set_description(f'Loads ({size})')
@@ -55,9 +55,9 @@ def run(runs, sizes, threads):
                 p2bar.set_description(f'Threads ({thread})')
                 command = []
                 if thread == 1:
-                    command = f'make run_seq ARGS="{size} {thread} {0} {0} {randLimit}"'
+                    command = f'make run_seq ARGS="{size} {thread} {0} {0}"'
                 else:
-                    command = f'make run_par ARGS="{size} {thread} {0} {0} {randLimit}"'
+                    command = f'make run_par ARGS="{size} {thread} {0} {0}"'
                 result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
                 jacobi_time_pattern = r'JacobiTime:\s+(\d+\.\d+s)'
@@ -71,14 +71,16 @@ def run(runs, sizes, threads):
                 response_jacobi = float(match.group(1).split('s')[0])
 
                 response_times.setdefault(size, {}).setdefault(thread, []).append((response_total, response_jacobi))
+        #finished a run
+        data = interpret_data(response_times)
+        generate_csv(data, file_name=f'data_{r+1}.csv')
     return response_times
 
 def interpret_data(raw_data, show_data:bool=False):
-    print('Interpreting data...')
     try:
         data = {}
-        for size in tqdm(raw_data, desc='Loads'):
-            for thread in tqdm(raw_data[size], desc='Threads', leave=False):
+        for size in raw_data:
+            for thread in raw_data[size]:
                 key = (size, thread)
                 full_program_times = [i[0] for i in raw_data[size][thread]]
                 jacobi_times = [i[1] for i in raw_data[size][thread]]
@@ -115,11 +117,10 @@ def interpret_data(raw_data, show_data:bool=False):
     return data
 
 def generate_csv(data, file_name='data.csv'):
-    file_location = 'res/'
+    file_location = 'out/'
     if not os.path.exists(file_location):
         os.makedirs(file_location)
     file_path = file_location + file_name
-    print(f'Generating CSV file in...')
     try:
         with open(file_path, 'w') as file:
             file.write('Size,Threads,MedianSeq(F),MeanSeq(F),StdevSeq(F),MedianSeq(J),MeanSeq(J),StdevSeq(J),Speedup(F),Speedup(J),Efficiency(F),Efficiency(J)\n')
@@ -128,12 +129,23 @@ def generate_csv(data, file_name='data.csv'):
                 
     except:
         exit('Error: could not write to file')
-    print(f"CSV file successfuly generated at {file_path}!")
 
 compile()
-sizes = [100,500,1000,2000]
-threads = [4,8,12]
+sizes = [100, 500, 1000]
+threads = [2,4,8,12]
+#get current OS time
+tempo = time.time()
 runs = int(sys.argv[1]) if len(sys.argv) > 1 else 3
 raw_data = run(runs, sizes, threads)
 data = interpret_data(raw_data, show_data=False)
 generate_csv(data)
+tempo = time.time() - tempo
+#convert seconds to hours:minutes:seconds
+tempo = tempo/3600
+hours = int(tempo)
+tempo = (tempo - hours) * 60
+minutes = int(tempo)
+tempo = (tempo - minutes) * 60
+seconds = int(tempo)
+tempo = f"{hours}h {minutes}m {seconds}s"
+print(f"Execution time: {tempo}")
