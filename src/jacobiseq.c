@@ -3,20 +3,20 @@
 #include <math.h>
 #include "jacobiseq.h"
 
-float* jacobiseq(float* matrix,float* constants,int N,float errorTolerance){
+float* jacobiseq(float* a,float* b,int N,float errorTolerance){
     
-    float* lastVariables = malloc(sizeof(float)*N);
+    float* x = malloc(sizeof(float)*N);
 
-    float* currentVariables = malloc(sizeof(float)*N);
+    float* nextX = malloc(sizeof(float)*N);
 
-    if (lastVariables == NULL || currentVariables == NULL) {
+    if (x == NULL || nextX == NULL) {
         fprintf(stderr, "Erro! Sem memória o suficiente!\n");
         exit(1);
     }
 
     //Chute inicial igual a B
     for(int i = 0;i<N;i++){
-        lastVariables[i] = constants[i];
+        x[i] = b[i];
     }
 
     int count = 0;
@@ -28,33 +28,33 @@ float* jacobiseq(float* matrix,float* constants,int N,float errorTolerance){
         for(int i = 0;i <N;i++){
             float sum = 0;
             for(int j = 0; j < N; j++){
-                sum += matrix[i * N + j] * lastVariables[j];
+                sum += a[i * N + j] * x[j];
             }
-            currentVariables[i] = (constants[i]-sum);
+            nextX[i] = (b[i]-sum);
         }
         //Fim do cálculo do vetor X_k+1
 
         //Verificação do critério de convergência
-        float maxError = -1;
-        float maxVariable = -1;
+        float maxDif = -1;
+        float maxX = -1;
             
         for(int i = 0;i<N;i++){
-            float currentError = fabsf(currentVariables[i] - lastVariables[i]);
-            if (currentError > maxError) {
-                maxError = currentError;
+            float currentDif = fabsf(nextX[i] - x[i]);
+            if (currentDif > maxDif) {
+                maxDif = currentDif;
             }
-            float absCurrentVariable = fabsf(currentVariables[i]);
-            if (absCurrentVariable > maxVariable) {
-                maxVariable = absCurrentVariable;
+            float currentAbsX = fabsf(nextX[i]);
+            if (currentAbsX > maxX) {
+                maxX = currentAbsX;
             }
         }
-        mr = maxError/maxVariable;
+        mr = maxDif/maxX;
         //Fim da verificação do critério de convergência
 
         //Atualiza o o vetor X_k com o vetor X_k+1
-        float* temp = lastVariables;
-        lastVariables = currentVariables;
-        currentVariables = temp;
+        float* temp = x;
+        x = nextX;
+        nextX = temp;
         //Fim da atualização do vetor X_k com o vetor X_k+1
 
         count++;
@@ -63,6 +63,6 @@ float* jacobiseq(float* matrix,float* constants,int N,float errorTolerance){
 
     printf("Iterações: %d\n",count);
 
-    free(currentVariables);
-    return lastVariables; //Essa variável tem que ser liberada fora!
+    free(nextX);
+    return x; //Essa variável tem que ser liberada fora!
 }
