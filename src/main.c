@@ -41,11 +41,11 @@ int main(int argc, char *argv[]){
 
     //Jacobi
     double delta = omp_get_wtime();
-#ifdef JACOBIPAR //this allows us to choose between parallel and sequential jacobi during compilation, by compiling with the flag -DJACOBIPAR we define JACOBIPAR and the code will use the parallel version
+#ifdef JACOBIPAR //Isso nos permite escolher entre jacobi paralelo e sequencial durante a compilação, ao compilar com a flag -DJACOBIPAR definimos JACOBIPAR e o código usará a versão paralela
     float* results = jacobipar(a,b,N,TOLERANCE);
-#else //if we don't define JACOBIPAR in the flags, the code will use the sequential version
+#else //Se não definirmos JACOBIPAR nas flags, o código usará a versão sequencial
     float* results = jacobiseq(a,b,N,TOLERANCE);
-#endif //references: https://gcc.gnu.org/onlinedocs/cpp/Ifdef.html and https://gcc.gnu.org/onlinedocs/gcc/Preprocessor-Options.html
+#endif //Referência: https://gcc.gnu.org/onlinedocs/cpp/Ifdef.html and https://gcc.gnu.org/onlinedocs/gcc/Preprocessor-Options.html
     delta = (omp_get_wtime() - delta);
     printf("JacobiTime: %lfs\n",delta);
     //Fim Jacobi
