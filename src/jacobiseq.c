@@ -34,7 +34,7 @@ float* jacobiseq(float* a,float* b,int N,float errorTolerance){
         }
         //Fim do cálculo do vetor X_k+1
 
-        //Verificação do critério de convergência
+        //Verificação do critério de parada
         float maxDif = -1;
         float maxX = -1;
             
@@ -49,7 +49,7 @@ float* jacobiseq(float* a,float* b,int N,float errorTolerance){
             }
         }
         mr = maxDif/maxX;
-        //Fim da verificação do critério de convergência
+        //Fim da verificação do critério de parada
 
         //Atualiza o o vetor X_k com o vetor X_k+1
         float* temp = x;

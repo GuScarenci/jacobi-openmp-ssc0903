@@ -39,7 +39,7 @@ float* jacobipar(float* a,float* b,int N,float errorTolerance){
         }
         //Fim do cálculo do vetor X_k+1
 
-        //Verificação do critério de convergência
+        //Verificação do critério de parada
         #pragma omp task shared(stop) firstprivate(nextX, x)
         {
             float mr = 1;
@@ -61,7 +61,7 @@ float* jacobipar(float* a,float* b,int N,float errorTolerance){
             mr = maxDif/maxX;
             stop = !(mr>errorTolerance);
         }
-        //Fim da verificação do critério de convergência
+        //Fim da verificação do critério de parada
         
         //Atualização do vetor X_k com o vetor X_k+1
         float* temp = x;
