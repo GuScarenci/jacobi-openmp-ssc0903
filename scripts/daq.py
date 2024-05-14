@@ -73,6 +73,7 @@ def run(runs, sizes, threads):
                 response_times.setdefault(size, {}).setdefault(thread, []).append((response_total, response_jacobi))
         #finished a run
         data = interpret_data(response_times)
+        generate_raw_csv(response_times, file_name=f'raw_data_{r+1}.csv')
         generate_csv(data, file_name=f'data_{r+1}.csv')
     return response_times
 
@@ -130,13 +131,30 @@ def generate_csv(data, file_name='data.csv'):
     except:
         exit('Error: could not write to file')
 
+def generate_raw_csv(data, file_name='raw_data.csv'):
+    file_location = 'out/'
+    if not os.path.exists(file_location):
+        os.makedirs(file_location)
+    file_path = file_location + file_name
+    try:
+        with open(file_path, 'w') as file:
+            file.write('Run,Size,Threads,Time(F),Time(J)\n')
+            for size in data:
+                for thread in data[size]:
+                    for run in range(len(data[size][thread])):
+                        file.write(f"{run+1},{size},{thread},{data[size][thread][run][0]},{data[size][thread][run][1]}\n")
+    except:
+        exit('Error: could not write to file')
+
+
 compile()
-sizes = [100, 500, 1000]
+sizes = [1000, 3000, 5000]
 threads = [2,4,8,12]
 #get current OS time
 tempo = time.time()
 runs = int(sys.argv[1]) if len(sys.argv) > 1 else 3
 raw_data = run(runs, sizes, threads)
+generate_raw_csv(raw_data)
 data = interpret_data(raw_data, show_data=False)
 generate_csv(data)
 tempo = time.time() - tempo
