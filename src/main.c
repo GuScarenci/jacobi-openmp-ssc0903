@@ -27,25 +27,25 @@ int main(int argc, char *argv[]){
 
     //Criação de matrizes e constantes
     srand(seed);
-    float* matrix = malloc(sizeof(float)*N*N);
+    float* a = malloc(sizeof(float)*N*N);
     float* diagonal = malloc(sizeof(float)*N);
-    float* constants = malloc(sizeof(float)*N);
-    if (matrix == NULL || diagonal == NULL || constants == NULL) {
+    float* b = malloc(sizeof(float)*N);
+    if (a == NULL || diagonal == NULL || b == NULL) {
         fprintf(stderr, "Erro! Sem memória suficiente para alocação dos vetores!\n");
         exit(1);
     }
-    initiateMatrixAndVectors(matrix,constants,N,diagonal);
+    initiateMatrixAndVectors(a,b,N,diagonal);
     //Fim da criação de matrizes e constantes
 
     omp_set_num_threads(T);
 
-    double delta = omp_get_wtime();
     //Jacobi
-#ifdef JACOBIPAR
-    float* results = jacobipar(matrix,constants,N,TOLERANCE);
-#else
-    float* results = jacobiseq(matrix,constants,N,TOLERANCE);
-#endif
+    double delta = omp_get_wtime();
+#ifdef JACOBIPAR //this allows us to choose between parallel and sequential jacobi during compilation, by compiling with the flag -DJACOBIPAR we define JACOBIPAR and the code will use the parallel version
+    float* results = jacobipar(a,b,N,TOLERANCE);
+#else //if we don't define JACOBIPAR in the flags, the code will use the sequential version
+    float* results = jacobiseq(a,b,N,TOLERANCE);
+#endif //references: https://gcc.gnu.org/onlinedocs/cpp/Ifdef.html and https://gcc.gnu.org/onlinedocs/gcc/Preprocessor-Options.html
     delta = (omp_get_wtime() - delta);
     printf("JacobiTime: %lfs\n",delta);
     //Fim Jacobi
@@ -54,16 +54,16 @@ int main(int argc, char *argv[]){
     float temp = 0;
     for(int j = 0;j<N;j++){
         if(j!=eq){
-            temp += diagonal[eq]*matrix[eq*N+j]*results[j];
+            temp += diagonal[eq]*a[eq*N+j]*results[j];
         }else{
             temp += diagonal[eq]*results[j];
         }
     }
     printf("Resultado calculado:\t%lf\n",temp);
-    printf("Resultado esperado:\t%lf\n",constants[eq]*diagonal[eq]);
+    printf("Resultado esperado:\t%lf\n",b[eq]*diagonal[eq]);
     //Fim da saída da equação escolhida pelo usuário
 
-    free(matrix);
+    free(a);
     free(diagonal);
-    free(constants);
+    free(b);
 }

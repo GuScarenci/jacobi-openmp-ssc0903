@@ -23,7 +23,7 @@ $(EXECUTABLE_SEQ): $(CFILES)
 	@mkdir -p build
 	$(CC) $(CFLAGS) $(INC_PARAMS) -o $@ $^ $(LDFLAGS) $(PDFLAGS)
 
-$(EXECUTABLE_PAR): MACROFLAGS += -DJACOBIPAR
+$(EXECUTABLE_PAR): MACROFLAGS += -DJACOBIPAR #define the macro that changes between sequential and parallel
 $(EXECUTABLE_PAR): $(CFILES)
 	@mkdir -p build
 	$(CC) $(MACROFLAGS) $(CFLAGS) $(INC_PARAMS) -o $@ $^ $(LDFLAGS) $(PDFLAGS)
@@ -50,6 +50,7 @@ run_seq: $(EXECUTABLE_SEQ)
 run_par: $(EXECUTABLE_PAR)
 	@time ./$(EXECUTABLE_PAR) $(ARGS)
 
+#debug versions
 debug: CFLAGS += -g
 debug: clean
 debug: $(EXECUTABLE_SEQ) $(EXECUTABLE_PAR)
@@ -62,6 +63,7 @@ debug_par: CFLAGS += -g
 debug_par: clean
 debug_par: $(EXECUTABLE_PAR)
 
+#run valgrind to check for memory leaks
 valgrind_seq: $(EXECUTABLE_SEQ)
 	valgrind $(VDFLAGS) ./$(EXECUTABLE_SEQ)
 
