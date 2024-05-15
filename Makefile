@@ -1,8 +1,8 @@
 SHELL := /bin/bash
 CC ?= gcc
-ZIP ?= 7za
+ZIP ?= zip
 PDFLAGS += -march=native
-CFLAGS += -Wall -Wextra -Wpedantic -O1
+CFLAGS += -Wall -Wextra -Wpedantic -O3
 LDFLAGS += -lm -fopenmp
 VDFLAGS += --leak-check=full --show-leak-kinds=all -s
 
@@ -34,7 +34,7 @@ clean:
 	@rm -rf out/*.csv
 
 zip: clean
-	$(ZIP) a $(ZIPFILE) ./*
+	$(ZIP) jacobi $(ZIPFILE) ./scripts ./src ./Makefile ./README.md
 
 run: $(EXECUTABLE_SEQ) $(EXECUTABLE_PAR)
 	@echo "Running Sequential Version:"
