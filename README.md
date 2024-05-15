@@ -1,6 +1,10 @@
 # jacobi-openmp-ssc0903
 Trabalho 1 para a Disciplina SSC0903 - Computação de Alto Desempenho
 
+Este projeto implementa o método Jacobi-Richardson para resolver sistemas lineares. Utilizando a linguagem C, o código oferece versões sequencial e paralela do algoritmo, aproveitando a biblioteca OpenMP para melhorar o desempenho por meio do paralelismo. O objetivo é demonstrar os ganhos de eficiência e speedup obtidos com a execução paralela, especialmente em sistemas de grande dimensão.
+
+Os códigos estão devidamente comentados e bem escritos, portanto o entendimento por meio da leitura dos códigos fonte é bem razoável.
+
 # Executando o código
 Para compilar o código digite:
 ```bash
