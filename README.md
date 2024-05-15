@@ -35,7 +35,7 @@ python scripts/daq.py <R>
 ```
 Onde `R` é o número de vezes que o código será executado.
 
-A saída do script será um arquivo `res/data.csv` com a média, mediana, desvio padrão dos tempos de execução do algoritmo sequencial e do paralelo e o speedup e a eficiência para cada par de carga trabalho (`N`) e número de threads (`T`).
+A saída do script será um arquivo `out/data.csv` e vários arquivos `out\data_N.csv` com a média, mediana, desvio padrão dos tempos de execução do algoritmo sequencial e do paralelo e o speedup e a eficiência para cada par de carga trabalho (`N`) e número de threads (`T`). Além disso o script gera um arquivo `out\raw_data.csv` e vários arquivos `out\raw_data_N.csv` com os dados brutos de tempo de execução.
 
 # Autores
 - [Beatriz Lomes](b.lomes@usp.br) - 12548038
