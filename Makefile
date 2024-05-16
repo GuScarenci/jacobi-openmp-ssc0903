@@ -44,7 +44,7 @@ clean:
 	@rm -rf out/*.csv
 
 zip: clean
-	$(ZIP) jacobi $(ZIPFILE) ./scripts ./src ./Makefile ./README.md
+	$(ZIP) jacobi $(ZIPFILE) ./scripts ./src ./Makefile ./README.md ./relatorio.pdf
 
 run: $(EXECUTABLE_SEQ) $(EXECUTABLE_PAR)
 	@echo "Running Sequential Version:"
